@@ -1,0 +1,26 @@
+SPRITE door_wood 16x16
+PALETTE
+. = clear
+a = #787888
+b = #32200e
+c = #b88444
+d = #94642e
+e = #f0c03c
+FRAME 1
+..aaaaaaaaaaaa..
+.aabbbbbbbbbaaa.
+.abccdccdccdbaa.
+.abcddcddcddbaa.
+.abcddcddcddbaa.
+.abcddcddcddbaa.
+.abcddcddcddbaa.
+.abcddcddceebaa.
+.abcddcddceebaa.
+.abcddcddcddbaa.
+.abcddcddcddbaa.
+.abcddcddcddbaa.
+.abcddcddcddbaa.
+.abcddcddcddbaa.
+.abbbbbbbbbbbaa.
+.aaaaaaaaaaaaaa.
+END

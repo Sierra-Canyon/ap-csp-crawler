@@ -1,0 +1,26 @@
+SPRITE door 16x16
+PALETTE
+. = clear
+a = #968caa
+b = #151d24
+c = #455564
+d = #2e3b48
+e = #3fa3ff
+FRAME 1
+..aaaaaaaaaaaa..
+.aabbbbbbbbbbaa.
+.abbbbbbbbbbbba.
+.abccccccccccb.a
+babccccccccccbba
+.abddddddddddba.
+.abbccccccccbba.
+.abbccccccccbba.
+.abbbddddddbbba.
+.abbbbccccbbbba.
+.abbbbcccccbbba.
+.abbbbbddbbbbba.
+.abbbbbeebbbbba.
+.abbbbbeebbbbba.
+.abbbbbbbbbbbba.
+.aaaaaaaaaaaaaa.
+END

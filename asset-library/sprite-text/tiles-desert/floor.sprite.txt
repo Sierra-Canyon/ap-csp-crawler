@@ -1,0 +1,31 @@
+SPRITE floor 16x16
+PALETTE
+. = clear
+a = #ceac6a
+b = #e3c37f
+c = #e0c07c
+d = #e5c581
+e = #e6c682
+f = #e1c17d
+g = #e4c480
+h = #e7c783
+i = #e8c884
+j = #e2c27e
+FRAME 1
+abcdaebfaegfagcb
+heedcaaadhgccaaa
+ijchiedhfgcgdgjc
+jjcgijeibcfgefid
+ehhgfhdbidbcjhej
+caaaichgfaaajjgc
+ajbhabbdahdcajjd
+geggdaaaedbjdaaa
+icgbigiebddjiccc
+hjhehijieebjiiic
+dhfiiedgefgcgbgh
+jaaafddhdaaahjed
+ahbiajbhafejafdj
+hgiheaaadfbegaaa
+bicddgidcjceghfj
+fcbbefejbfhcfhec
+END

@@ -1,0 +1,27 @@
+SPRITE chest_green 16x16
+PALETTE
+. = clear
+a = #341e0e
+b = #3cba39
+c = #57f654
+d = #2a9627
+e = #98ff96
+f = #1b6c1a
+FRAME 1
+................
+................
+................
+...aaaaaaaaaa...
+..abbbbbbbbbba..
+.abbbbbbbbbbbba.
+.acccccccccccca.
+.adddddeeddddda.
+.adddddeeddddda.
+.acccccccccccca.
+.adddddddddddda.
+.adddddddddddda.
+.afffffffffffa..
+.aaaaaaaaaaaaaa.
+................
+................
+END

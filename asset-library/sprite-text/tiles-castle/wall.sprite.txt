@@ -1,0 +1,44 @@
+SPRITE wall 16x16
+PALETTE
+. = clear
+a = #ad5d49
+b = #b2624e
+c = #b56551
+d = #b1614d
+e = #b46450
+f = #ae5e4a
+g = #50281e
+h = #ab5b47
+i = #b0604c
+j = #9e4e3a
+k = #9f4f3b
+l = #a45440
+m = #a55541
+n = #a3533f
+o = #9c4c38
+p = #9d4d39
+q = #a1513d
+r = #a0503c
+s = #a2523e
+t = #9b4b37
+u = #ac5c48
+v = #af5f4b
+w = #b3634f
+FRAME 1
+abcdefagchheciag
+jklmnokgpqrqolkg
+nnsqkmtgqjtpksmg
+gggggggggggggggg
+buvgcwidcwugehvf
+skqgortprnqgtmpk
+rosgqoprtjpgppsm
+gggggggggggggggg
+ebwuvbegeaahiudg
+okrmkojgrjlnsrpg
+skokpqpgqlqtmkng
+gggggggggggggggg
+vfdgedwbcacgfubb
+rsoglklokjjgmmoo
+jtmglrtsonrgnnln
+gggggggggggggggg
+END

@@ -1,0 +1,26 @@
+SPRITE hammer 16x16
+PALETTE
+. = clear
+a = #1e1e28
+b = #a4a4b4
+c = #787888
+d = #a06a3a
+e = #7a4a24
+FRAME 1
+................
+................
+................
+..........aaaa..
+.........abbbba.
+.........abcccba
+.aaaaaaaaabcccba
+.addddddddbcccba
+.aeeeeeeeebcccba
+.aaaaaaaaabcccba
+.........abcccba
+.........abbbba.
+..........aaaa..
+................
+................
+................
+END

@@ -1,0 +1,27 @@
+SPRITE chest_wood 16x16
+PALETTE
+. = clear
+a = #341e0e
+b = #ba7a3a
+c = #f6ce54
+d = #965c28
+e = #ffec96
+f = #6c401a
+FRAME 1
+................
+................
+................
+...aaaaaaaaaa...
+..abbbbbbbbbba..
+.abbbbbbbbbbbba.
+.acccccccccccca.
+.adddddeeddddda.
+.adddddeeddddda.
+.acccccccccccca.
+.adddddddddddda.
+.adddddddddddda.
+.afffffffffffa..
+.aaaaaaaaaaaaaa.
+................
+................
+END

@@ -1,0 +1,27 @@
+SPRITE floor 16x16
+PALETTE
+. = clear
+a = #323e54
+b = #202636
+c = #1d2333
+d = #1e2434
+e = #1f2535
+f = #1c2232
+FRAME 1
+aaaaaaaaaaaaaaaa
+abcdbbcbabefcfde
+abebfbecaedfbbbd
+affecedcacfdcece
+afdfdeeeacccfecd
+aceccedcacfceebb
+abfdfccbadffebce
+adcebbefafededfd
+aaaaaaaaaaaaaaaa
+addebbdcaefdedcf
+adeedbddafbdfcce
+adbdedecabefccbb
+abcedbbeabbddefb
+affbbbfdacfdebbb
+abfdbecdafeffdbd
+acfbbcfbadefddcc
+END
