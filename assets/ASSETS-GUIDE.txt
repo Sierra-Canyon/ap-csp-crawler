@@ -1,0 +1,77 @@
+HOW TO PUT YOUR OWN ART AND SOUND IN THE GAME
+=============================================
+
+Looking for ready-made art and music, or want a chatbot to help you make some?
+Open  asset-library/index.html: it hands you files that are already named correctly.
+
+Both graphics engines (dungeon-graphics and dungeon-web) read THIS folder.
+
+THE EASY WAY: just replace a file
+----------------------------------
+Save your picture over one of these, keeping the same name:
+
+    floor.png     the ground                     (tile .)
+    wall.png      walls                          (tile #)
+    door.png      the way to the next level      (tile +)
+    loot.png      treasure                       (tile $)
+    player.png    the hero                       (tile @)
+    monster.png   any monster                    (tile M)
+    npc.png       someone to talk to             (tile N)
+    powerup.png   a powerup                      (tile *)
+    boss.png      the boss, drawn a bit bigger   (tile B)
+    sword.png     the sword, pointing RIGHT
+    arrow.png     what F shoots, pointing RIGHT
+    stone.png     what T throws
+    bolt.png      every aimed spell, pointing RIGHT
+
+Pictures can be ANY size: 16x16, 32x32, 64x64, a photo. They are drawn one tile big.
+Use PNG with a see-through background for the player, monsters, loot and sword.
+
+Sounds (.wav, .ogg or .mp3 all work):
+
+    music     loops while you play
+    hit       your sword lands            hurt     a monster hits you
+    defeat    a monster dies              bump     you walk into a wall
+    loot      you open a chest            potion   you drink a potion
+    door      you take the stairs         win / lose
+    shoot     an arrow or stone leaves    cast     you cast a spell
+    powerup   you pick up a *             talk     someone speaks
+    roar      the boss changes phase      quake    the ground shakes
+
+Anything missing is simply skipped (or drawn as a colored block), so you can
+delete files you do not want. Nothing here can break the game.
+
+ANIMATION: sprite sheets, no settings needed
+---------------------------------------------
+  * A picture that is WIDER than it is tall, e.g. 32x16 or 64x16, is read as a row of
+    square frames and played as an animation.
+  * A picture that is 4 squares TALL, e.g. 32x64, is read as a walking sheet:
+        row 1 = facing down     row 2 = facing left
+        row 3 = facing right    row 4 = facing up
+    and the squares across each row are the walking frames. (Look at player.png.)
+  * A square picture is a single still image.
+
+If your sheet does not fit those rules (for example 4 frames x 4 directions is square),
+describe it with one line in assets.txt.
+
+SPECIAL NAMES
+-------------
+    monster_grub.png  monster_bat.png  monster_ogre.png    a picture for one kind of monster
+                                                           (the monster's name, in lower case)
+    wall2.png  floor3.png  door4.png  music2.ogg ...       used only on that level number
+    monster4.png   monster_ogre4.png                       monsters on that level number only
+    boss_warden.png   boss4.png   boss_dragon4.png         a picture for one boss (its name, lower case, no spaces)
+    npc4.png   powerup4.png                                the N and * on that level number only
+    spell_zap.png                                          the picture for ONE spell. Without it, bolt.png is used
+
+Level 4 is YOUR level (MyLevel), so wall4.png, floor4.png, door4.png, loot4.png, monster4.png,
+npc4.png, boss4.png and music4 give your level its own look without changing levels 1 to 3.
+Look in samples/ for three finished examples: water, forest and fire.
+
+If the special file is not there, the plain one (monster.png, wall.png, music) is used.
+
+DOWNLOADED TILESETS
+-------------------
+Most free tilesets are one big picture with many small squares. Put the file here and
+add lines to assets.txt saying which square is which. The examples are in that file.
+Only use art and music you made, or that the creator says is free to use, and credit them.

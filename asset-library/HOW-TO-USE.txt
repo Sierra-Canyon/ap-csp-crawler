@@ -1,0 +1,100 @@
+DUNGEON ASSET LIBRARY: HOW TO USE IT
+=====================================
+
+WHAT IS IN HERE
+    index.html          OPEN THIS FIRST (double-click). Browse everything, hear the music,
+                        and download any item already named correctly for your game.
+                        It also has the Workshop and the chatbot prompts.
+    PREVIEW.png         every picture on one sheet
+    characters/         10 heroes. Each is a walking sheet (2 frames x down, left, right, up)
+    enemies/            23 monsters. Each has 2 animation frames
+    people/             8 characters for the N tile, someone to talk to
+    bosses/             8 bosses for the B tile
+    tiles/<theme>/      10 level themes, each with wall.png, floor.png, door.png:
+                        dungeon water forest fire ice desert castle cave tech garden
+    items/              treasure for the $ tile (chests, gem, coins, potion ...) and extra doors
+    weapons/            swords and other things to swing. All point RIGHT
+    projectiles/        arrows, a stone, and spell bolts in four colors. All point RIGHT
+    powerups/           4 stars for the * tile
+    music/              12 looping songs (.wav) + song-text/ (the same songs as editable text)
+    sounds/             3 sets of the 15 sound effects: classic, arcade, soft
+    sprite-text/        every picture as editable text, one character per pixel
+    CHATBOT-PROMPTS.txt copy-and-paste prompts for getting your OWN art and music from a chatbot
+    LICENSE.txt         everything here is CC0: free to use
+
+
+THE ONE IDEA YOU NEED
+    The game decides what a file is FOR by its NAME. Put a picture called wall.png in the
+    game's  assets  folder and every # is drawn with it. No code changes. Ever.
+
+        player.png        your hero                       @
+        wall.png          walls                           #
+        floor.png         the ground                      .
+        door.png          the way to the next level       +
+        loot.png          treasure                        $
+        monster.png       every monster                   M
+        monster_grub.png  monster_bat.png  monster_ogre.png     just that kind of monster
+        npc.png           someone to talk to              N
+        powerup.png       a powerup                       *
+        boss.png          the boss (drawn a bit bigger)   B
+        sword.png         your weapon (must point right)
+        arrow.png  stone.png     what F shoots and T throws (must point right)
+        bolt.png          every aimed spell (must point right). spell_zap.png is for the spell zap only
+        music.wav         background music (.ogg and .mp3 also work)
+        hit  hurt  defeat  bump  loot  potion  door  win  lose    sound effects (.wav)
+        shoot  cast  powerup  talk  roar  quake                   more sound effects (.wav)
+
+    Put a LEVEL NUMBER on the end and the file is only used on that level:
+        wall4.png  floor4.png  door4.png  monster_bat4.png  npc4.png  boss4.png  player4.png  music4.wav
+    Level 4 is MyLevel: YOUR level. So "4" files change your level and nobody else's.
+
+
+WAY 1: THE EASY WAY (the browser page renames the file for you)
+    1. Double-click asset-library/index.html.
+    2. Click a picture or sound.
+    3. Choose "Use it as" (wall, player, music ...) and "only level 4" if it is for your level.
+    4. Press Download. The file arrives with the right name, e.g. wall4.png.
+       (For a whole theme: press "Get this whole theme", you get a zip of wall, floor and door.)
+    5. Move it from Downloads into the game's  assets  folder (the one with wall.png in it).
+    6. Run the game:    cd dungeon-graphics     then     dotnet run -- 4
+       Web player instead? Drag the file onto dungeon-web/player.html.
+
+WAY 2: BY HAND (copy and rename)
+    1. Copy the file you want, e.g.  asset-library/tiles/ice/wall.png
+    2. Paste it into  assets/
+    3. Rename it to what it is for, e.g.  wall4.png
+    Careful: if you paste wall.png without renaming, you replace the wall on EVERY level.
+
+WAY 3: NO RENAMING (tell the game in assets.txt)
+    Copy the file into assets/ with its own name, then add a line to assets/assets.txt:
+        player        = hero_mage.png
+        monster_ogre4 = golem.png
+        music4        = spooky_crypt.wav
+    Good when you want to keep descriptive file names, and needed for big tileset sheets.
+
+
+CHANGING A PICTURE
+    Open index.html > click the picture > "Edit as text". Every character is one pixel and the
+    PALETTE says what color each letter is. Change a palette color to recolour the whole
+    sprite, or change characters to move pixels. The preview updates as you type.
+    Download it when you like it.
+
+MAKING YOUR OWN
+    * Draw it:   any paint program. 16x16 or 32x32 pixels, save as PNG, see-through background.
+    * Chatbot:   CHATBOT-PROMPTS.txt (also inside index.html, with copy buttons).
+    * Any picture: index.html > Workshop > "Picture -> sprite" shrinks it and removes the background.
+
+ANIMATION RULES (the game works these out from the picture's shape)
+    square picture          one still image
+    wider than tall         a row of square frames, played in a loop     (32x16 = 2 frames)
+    four squares tall       a walking sheet: rows are down, left, right, up   (32x64)
+    If a hero picture is a single still image, the game mirrors it when you walk left.
+
+IF SOMETHING LOOKS WRONG
+    Nothing changed          the name is not exact (Wall4.PNG, wall4 (1).png, wall 4.png) or
+                             the file is not in the assets folder next to wall.png
+    Changed on every level   you forgot the level number on the end
+    A white or black box     the picture has no see-through background, use Picture -> sprite
+    Hero looks squashed      the picture is not one of the shapes in ANIMATION RULES
+    No sound in the browser  click the game once first; browsers wait for a click before playing
+    Want the old look back   delete the file you added

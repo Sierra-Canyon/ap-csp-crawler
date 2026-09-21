@@ -1,0 +1,72 @@
+<Project>
+  <!--
+    TEACHER NOTE - students never need to open this file.
+
+    C# only lets ONE file in a project hold free functions ("top-level statements").
+    The course design wants several files of free functions and no classes, so this
+    build step glues every .cs file in the project into one hidden file
+    (obj/.../Stitched.cs) just before compiling, and compiles only that.
+
+    Each piece is stamped with a #line marker, so compiler errors, warnings and the
+    debugger still point at the student's real file and the real line number.
+
+    ONE DELIBERATE EXTRA: the first file (Program.cs) is wrapped in { } before compiling.
+    Without that, C# quietly lets every function see every variable declared in
+    Program.cs - so a student who forgets a parameter gets a program that still works,
+    which is the opposite of the lesson. With the wrap they get
+        error CS0103: The name 'health' does not exist in the current context
+    Set IsolateProgramVariables to false in the .csproj to turn this off.
+  -->
+
+  <UsingTask TaskName="StitchFiles" TaskFactory="RoslynCodeTaskFactory"
+             AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <OutputFile ParameterType="System.String" Required="true" />
+      <WrapFirst ParameterType="System.Boolean" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Text" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        Regex usingLine = new Regex(@"^\s*using\s+(static\s+)?[A-Za-z_][\w\.]*\s*;\s*$");
+        StringBuilder usings = new StringBuilder();
+        StringBuilder body = new StringBuilder();
+        bool first = true;
+        foreach (var item in Files)
+        {
+            string path = item.GetMetadata("FullPath");
+            string[] lines = File.ReadAllLines(path);
+            bool wrap = first && WrapFirst;
+            first = false;
+            if (wrap) body.AppendLine("{");
+            body.AppendLine("#line 1 \"" + path + "\"");
+            foreach (string line in lines)
+            {
+                if (usingLine.IsMatch(line)) { usings.AppendLine(line.Trim()); body.AppendLine(); }
+                else body.AppendLine(line);
+            }
+            if (wrap) { body.AppendLine("#line hidden"); body.AppendLine("}"); }
+        }
+        string text = usings.ToString() + body.ToString();
+        Directory.CreateDirectory(Path.GetDirectoryName(OutputFile));
+        if (!File.Exists(OutputFile) || File.ReadAllText(OutputFile) != text)
+            File.WriteAllText(OutputFile, text);
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="StitchStudentFiles" BeforeTargets="CoreCompile">
+    <PropertyGroup>
+      <IsolateProgramVariables Condition="'$(IsolateProgramVariables)' == ''">true</IsolateProgramVariables>
+      <StitchedFile>$(MSBuildProjectDirectory)/$(IntermediateOutputPath)Stitched.cs</StitchedFile>
+    </PropertyGroup>
+    <StitchFiles Files="@(StitchPiece)" OutputFile="$(StitchedFile)" WrapFirst="$(IsolateProgramVariables)" />
+    <ItemGroup>
+      <Compile Include="$(StitchedFile)" />
+      <FileWrites Include="$(StitchedFile)" />
+    </ItemGroup>
+  </Target>
+</Project>

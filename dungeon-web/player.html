@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dungeon Web Player</title>
+<style>
+  :root { --bg:#14121c; --panel:#1f1b2b; --line:#3d3556; --text:#e6e3f0; --dim:#9a92b5; --gold:#ffe278; --good:#6fd08a; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 16px; display:grid; grid-template-columns:minmax(0, 800px) minmax(240px, 1fr); gap:16px; align-items:start; }
+  @media (max-width: 1000px) { main { grid-template-columns: 1fr; } }
+  h1 { font-size: 18px; margin: 0 0 4px; color: var(--gold); letter-spacing: .04em; }
+  h2 { font-size: 13px; margin: 14px 0 6px; color: var(--dim); text-transform: uppercase; letter-spacing: .08em; }
+  canvas { width:100%; height:auto; aspect-ratio: 4 / 3; background:#000; border:2px solid var(--line); border-radius:6px; image-rendering: pixelated; display:block; outline:none; }
+  canvas:focus { border-color: var(--gold); }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:14px; }
+  .drop { border:2px dashed var(--line); border-radius:8px; padding:14px; text-align:center; color:var(--dim); }
+  body.dragging .drop { border-color: var(--gold); color: var(--gold); }
+  button, label.btn { display:inline-block; background:#2d2740; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:7px 10px; font:inherit; cursor:pointer; margin:4px 4px 0 0; }
+  button:hover, label.btn:hover { border-color: var(--gold); }
+  input[type=file] { display:none; }
+  select { background:#2d2740; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:4px 6px; font:inherit; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  td { padding:2px 4px; border-bottom:1px solid #2a2438; }
+  td:last-child { text-align:right; color:var(--dim); }
+  td.yours { color: var(--good); }
+  p { margin: 6px 0; color: var(--dim); font-size: 13px; }
+  code { background:#2a2438; padding:1px 5px; border-radius:4px; color:var(--text); }
+  #status { color: var(--gold); min-height: 1.4em; }
+</style>
+</head>
+<body>
+<main>
+  <div>
+    <canvas id="screen" width="800" height="600" tabindex="0"></canvas>
+    <p>Click the game, then: <b>Arrows / WASD</b> move · walk into a monster to attack, into a person to talk · <b>F</b> arrow · <b>T</b> stone · <b>1</b> to <b>4</b> spells, all in the direction you face · <b>P</b> potion · <b>Tab</b> change leader · <b>M</b> music · <b>R</b> restart · in a conversation: <b>1</b>, <b>2</b> or <b>Enter</b></p>
+  </div>
+  <div class="panel">
+    <h1>DUNGEON WEB PLAYER</h1>
+    <p id="status">Playing the built-in template game.</p>
+    <div class="drop">Drag <code>mygame.txt</code>, pictures, sounds, or your whole <code>assets</code> folder anywhere onto this page.</div>
+    <label class="btn">Choose files<input id="pickFiles" type="file" multiple></label>
+    <label class="btn">Choose assets folder<input id="pickFolder" type="file" webkitdirectory></label>
+    <button id="reset">Back to built-in</button>
+    <p><label>Start on <select id="startLevel"></select></label></p>
+    <h2>Game</h2>
+    <table id="gameInfo"></table>
+    <h2>Art and sound in use</h2>
+    <table id="assetInfo"></table>
+    <p>To make <code>mygame.txt</code>: run your text game, type <code>export</code>, press Enter. The file appears in your <code>dungeon</code> folder. Nothing you load here is uploaded anywhere, it stays in this browser tab.</p>
+  </div>
+</main>
+<script>
+"use strict";
+const BUILTIN_GAME = "DUNGEON-EXPORT 2\nMAXHP 10\nMAXMANA 6\nCHARACTER 10 4 Rook\nCHARACTER 7 3 Mote\nCHARACTER 8 3 Hero\nSTART 2 potion\nSTART 0 shield\nSTART 0 gold\nSTART 3 arrow\nSTART 2 stone\nSHOT arrow 3 6\nSHOT stone 1 3\nSPELL 2 spark spark\nSPELL 3 mend mend\nSPELL 4 quake quake\nSPELL 2 bolt zap\nBOLT 1 1 3\nBOLT 1 2 3\nBOLT 1 3 3\nBOLT 1 4 3\nBOLT 2 1 3\nBOLT 2 2 3\nBOLT 2 3 3\nBOLT 2 4 3\nBOLT 3 1 3\nBOLT 3 2 3\nBOLT 3 3 3\nBOLT 3 4 3\nBOLT 4 1 3\nBOLT 4 2 3\nBOLT 4 3 3\nBOLT 4 4 3\nBOLT 5 1 3\nBOLT 5 2 3\nBOLT 5 3 3\nBOLT 5 4 3\nBOSSPHASE 1 0\nBOSSPHASE 2 4\nBOSSPHASE 3 3\nLEVEL 1 0\n##########\n#@...#..+#\n#.##.#.#.#\n#.#..M.#.#\n#.#.##.#.#\n#..N#..$.#\n##########\nEND\nMONSTER 1 4 2 5 3 Grub\nNPC 1 Guide\nQUEST 1 \nSTARTS 1 0 0 0 6\nSAY 1 1 5\nT You are new down here. Want some advice?\nA Yes, please.\nB I will manage.\nG \nSAY 1 2 3\nT Do not let them touch you. An arrow flies 6 squares, and a monster you shoot cannot hit back.\nA What about magic?\nB Thanks.\nG \nSAY 1 3 -1\nT A spark costs 2 mana and goes straight through armor. Mana comes back slowly. The controls list has the keys.\nA \nB \nG \nSAY 1 4 -1\nT Take these. You will need them.\nA \nB \nG give arrows\nSAY 1 -1 -1\nT Off you go.\nA \nB \nG finish quest\nSAY 1 -1 -1\nT Suit yourself. The offer stands.\nA \nB \nG \nSAY 1 -1 -1\nT Still alive? Good. Keep moving.\nA \nB \nG \nLEVEL 2 0\n################\n#@..#.....#...$#\n#.#.#.###.#.##.#\n#.#..*#$..M....#\n#.#####.####.#.#\n#...M...#....#.#\n#.#####.#.####.#\n#N......#....M+#\n################\nEND\nMONSTER 2 5 3 10 3 Grub\nMONSTER 2 4 4 4 5 Bat\nMONSTER 2 7 5 13 7 Ogre\nPOWERUP 2 5 3 regen\nNPC 2 Sage\nQUEST 2 gold\nSTARTS 2 0 2 3 6\nSAY 2 1 -1\nT I am building a shield, and I am 3 gold short.\nA I will find it.\nB Not my problem.\nG \nSAY 2 -1 -1\nT Monsters carry gold. Come back with 3.\nA \nB \nG start quest\nSAY 2 -1 -1\nT You do not have 3 gold yet.\nA \nB \nG \nSAY 2 4 -1\nT You have the gold! Will you trade it?\nA Here you go.\nB I will keep it.\nG \nSAY 2 5 -1\nT Done. Give me a moment.\nA \nB \nG finish quest\nSAY 2 -1 -1\nT There. It will take a hit for you.\nA \nB \nG give shield\nSAY 2 -1 -1\nT The shield is holding up, I hope?\nA \nB \nG \nLEVEL 3 1\n####################\n#@.....#$..M.......#\n#.####.#.#########.#\n#.#$N#.#.#..*....#.#\n#.#..M.#.#.#####.#.#\n#.####.#.#.#+B.#.#.#\n#......#.#.##M.#.#.#\n#.######.#...$.#.#.#\n#.#$..M..#######.#.#\n#...#............M.#\n####################\nEND\nMONSTER 3 6 4 11 1 Grub\nMONSTER 3 5 5 5 4 Bat\nBOSS 3 18 5 13 5 Warden\nMONSTER 3 6 4 13 6 Grub\nMONSTER 3 5 5 6 8 Bat\nMONSTER 3 8 6 17 9 Ogre\nPOWERUP 3 12 3 might\nNPC 3 Ghost\nQUEST 3 boss\nSTARTS 3 0 3 4 7\nSAY 3 1 2\nT The Warden locked me in here. While it lives, the door stays shut.\nA I will deal with it.\nB How do I beat it?\nG \nSAY 3 -1 -1\nT Then go. Come back when it is over.\nA \nB \nG start quest\nSAY 3 1 -1\nT Hurt it from far away while you can. When it roars, the floor will hurt all of you.\nA I will deal with it.\nB Maybe later.\nG \nSAY 3 -1 -1\nT It still lives. I can hear it.\nA \nB \nG \nSAY 3 5 -1\nT It is gone. I can feel it. Let me help you, before I go.\nA \nB \nG finish quest\nSAY 3 6 -1\nT Be well.\nA \nB \nG heal party\nSAY 3 -1 -1\nT And be ready.\nA \nB \nG restore mana\nSAY 3 -1 -1\nT ...\nA \nB \nG \nLEVEL 4 1\n########\n#@.M.$+#\n########\nEND\nMONSTER 4 7 5 3 1 Grub\nNPC 4 Stranger\nQUEST 4 \nSTARTS 4 0 0 0 0\nSAY 4 1 -1\nT Hello. I did not expect anyone.\nA Who are you?\nB Goodbye.\nG \nSAY 4 -1 -1\nT Nobody yet. Somebody has to write my lines.\nA \nB \nG \n";
+const BUILTIN_ART = {"arrow": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAR0lEQVR4nGNgGAWDBNxxs/l/x83mPzFqNeREUNQxIhvCwMDAsEvuG14DuNx6GNwczBicTBQYbjx6w8hEhoMxASVeGAWDAQAApyQVKhjYTQIAAAAASUVORK5CYII=", "bolt": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAAAbElEQVR4nGNgGAWjYLCAqFX//5MiThOzolb9/4+sKGrV//+r7mCK4TMclx5c+hiRNQcYYSoIVYbQq++iikWvZmBYFsYI1780FFMNuj4Y2HAOQi8LY2RkwuaqAQMDEQUYBhArTi+zRsEooDkAANmTdEz5O2pVAAAAAElFTkSuQmCC", "boss": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAABX0lEQVR4nKWUr67CMBTGvy3IybJUI24IIYgFcYNEYJcgkWSKJ0BeyROgFuQUgifgCW4QE2QCRW4IuUFMoDDnGtrblY5s65c0aU/P7+T8aQrmcTpne0JNnbM9MY+TLe+qhjpwFVtlXlQhshI2dZX52fItALjdr04wnNHhO5EB40GvkGSUorRCG97RO6GDuqL0iNv96pjumvDyDahwuOUIt1xC6jke9KC238hPHwinj39eOeu8ixK1P/bGfVW1v07GvS7ZiirtEzKNwZYH8zjtRmNadvqU5xdiHqc8v8glzstOn3ajMeljaMq7AlaDrYIJTj+HYtY+wyqY4JP7iNLjS/JNeYd5nGbzBQAg2awR+ext++LfG1R/ALDhW+Iiy1LM5gvEm7V00JU877IsRbc7KNw15VtGz2dAG1XlHeB1hu8qUCVesg0vv2JhVIPpM9Z9Tba6/EswNYCpwrJvuCn/B+EDTi7Yj33iAAAAAElFTkSuQmCC", "door": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAxElEQVR4nGNkgIJpPav+M5AAskrCGBkYGBgYkTU3dZQQpbmuogduCBNMkFjN6GpZkCX0tMyIMuDStVMMWSVhjNN6Vv1nkhCRI8nvMADTx/LizSNGBgaG/wwMDAyv3rwg2oC6ih6GrJIwRhQvvHj1iKA3Ll07hcJnwqGOaMCCLnDp2ikGCTE5rIpfvHpE2ACYQnSvoDsdBoj2Aq6wweoCmI0wr2BzOkEDGBgYGA7Mgxig4YPbAOrHAjLQ8DlCvAGwHEYqAAAy8j1QWXSzVAAAAABJRU5ErkJggg==", "floor": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABoklEQVR4nKWTy3bUMBBEb3dL1nhCkgN8Dkt2/P9vkHB4jB7Wg4WRMocNC7yRLaurS1XV8uXzp8F/PA7g6fEBVaX3TgiB3julFPZ9J6XELSY+fngPwBiDGCP7vgOgc/N+rbXinKO1hogAEGNkjMFxHFwuF0SEnPPJYKLNTTNbIH+DjzHW+7ZtJ4NaK713xhg45wAwM47jWAzuVxGhtUZr7e0KqkpKiVIKZoaqMsbAzFa31hq1VlR1nXMTdVJ2ztF7x8wQEUopALTWMDOu1+vSo9Z6MnDO4b1HVTmOgzEGIrKuNZvMfwAhhLMpwMvrt3/6/f3HTwB+3SIAt5jecvD89MgYA+89X19eefdwXWrfixdCIOdMa40QAqp6AvTeT9TbbTmgqrTWliu1VlJKbNvGtm0L2M0CM8M5R0yZCSoiq8h7v77NjN77G4PjOCilrG6lFESEMQb7vpNzXiJ6789GMdJ7PwFCCMvj6YqI4Jyj1or3npxPZvczA39mIaVErXVZNA/OWOecUdU1aDOhOecTwMy4XC6reIbpPkDe+yXwFNnM+A2tohJ9lWy0LgAAAABJRU5ErkJggg==", "loot": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAlUlEQVR4nGNgGPKAEZljIsf3nxhNZx59guuDM0zk+P63xegQZWvVkitwQ5hI1czAwMDQFqMDdy0LTNAmRIpoAxgYGBgYllxhQDFgQd8VDDWZE/IYGBgYGKYXTMJpDhNp1mICRgYGSBgc2uBGkka7gF0MZx59YsTrBWIAxV6Au+Dak09Eazpx7ws8HcDDgBzbkVPkwAEAe64sAjcEODcAAAAASUVORK5CYII=", "monster": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAAA10lEQVR4nO2SIRKDMBBFfzscIQpRHR2NqkZUVeQI1RwDzREiUBXoKnQ0upo7UFPShC7pZqYzGL7Kbja772cW2LVrYx2opJBiovLjMJL1fwUQUkz1Q5PF1dmwIFIMBAl/uB0Gsrm52ShEqgEXCCkm3SjURYc8z6Fb5YrqokPVlzBXC90qEmJ2zTEAfH7jC4CjJUAM3jfh3809srUh9v4MYnU5/QSr+pIcHrtbBeAMjIlrIAPSvp8rroGjH/jUsbNulFs6H577HoDrESwSC/mt5RKmvKV6bKYX5I1/jTabS4AAAAAASUVORK5CYII=", "monster_bat": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAABHUlEQVR4nO1UOxKCMBB9MB6AkiPsMTiCla2UjoW1NhRppLaw1paKI3iMHIGSG2CByTwW4uDojIW+hs1mP+/tZgB+HmkiXZpI96m4VxEDQJ4Z6OLc0H2b1kbuvF9WHyEUO4NJpIl0eWa8j21OzjMTLKwFhMjGfNBNRATlpoKIDAq7xpdbEWw+RwAALLSDVa13Ja6nPQDgeK6B7XPF2iciKKUCAFhrR3FNayO/06lxsnIuAvTq+U1M5R/PtRew3pU4bJeD+8ut6FfQtDbicYZGy3dupKHmAHxzbTP8Ch4kOrZzGJiqZ12saq+a43ikTG6OgAEBV1AnFKt6VGQqjlfiCIYEcMyoEEM/rKnG+h/Bfj0JJuDwlMC7mCPgj6/jDuCxuNUjZlAjAAAAAElFTkSuQmCC", "monster_grub": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAAA10lEQVR4nO2SIRKDMBBFfzscIQpRHR2NqkZUVeQI1RwDzREiUBXoKnQ0upo7UFPShC7pZqYzGL7Kbja772cW2LVrYx2opJBiovLjMJL1fwUQUkz1Q5PF1dmwIFIMBAl/uB0Gsrm52ShEqgEXCCkm3SjURYc8z6Fb5YrqokPVlzBXC90qEmJ2zTEAfH7jC4CjJUAM3jfh3809srUh9v4MYnU5/QSr+pIcHrtbBeAMjIlrIAPSvp8rroGjH/jUsbNulFs6H577HoDrESwSC/mt5RKmvKV6bKYX5I1/jTabS4AAAAAASUVORK5CYII=", "monster_ogre": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAABMUlEQVR4nGNkwAI0RAT+YxO/8eYDIzZxSgCGgRoiAv93FXlhVezWt40oR5DiARQBZMsf3XqE1fCULVfwOoJUDzChK3p06xGDbJYcQ9SWGyji1hNsMMTwWf7o1iMMPMdHByN0MBzAwMDAcLTgCMMyHw2CYtgAqR7A6gCzWVuIEsMFSPEA3AHIQXMqzQdDIbIYrkSGz7G4PMAIM3COjw4DAwMkkbkZSWBVvOvcCwZkdcgJCuYomDwukLLlCgMDAyJHsOBVTSQg0wP/b7z5wIg1DdATYHXArnMviBKjBmBhYIDER8qWK/9hbHwlGbI6XIbuOvcCIxpweQCrIehxiivhoetB9gA2ByB7jqqJENlAGAiTEkHxQJiUCDzhIavDSAOE8ji15bHWhsh8bGmCUGVEin4AjnPTOlex/K8AAAAASUVORK5CYII=", "npc": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAABPUlEQVR4nMVVIY7DMBDcVIfygMCAgoLK4NSXRFUVUBTUFxQYGhww6COKAqoqykuqAqvgQEBgHhDqgso+O7ZzjlOpQ6ysdj0z9m4M8GFEtmCaID6MtR2Tuf1tx+PN1Vo7W0CaIE62ZyORVAW0HYv6206Kc4mYYiAaFgry34bJ+GqJNBE4Q5zWzEk+xcCXbZP80ABArEQa+ME9AAD4kg8NkO0ZSFXweHPVDBgCXoUxrDMKjxrLVYDW4ycw1cDCtYkgVcl9IJyvM6qtQwPiWzuBtmNReT9xwEfAl/1fUV5CeT9pjfQffA1oAtTupXlpJKcJ4mMiQgxIAaKB1OZRsf8+vpqpKowRm2PAOgUhCDXgbMIxjE3AVBgCxE/HNx4C1YD1CuaQrZbIeg2uPTUBpCqCiX3IbHjbXdoeIBfUSXgCMYy+w3IKCnUAAAAASUVORK5CYII=", "player": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAABACAYAAAB7jnWuAAACcElEQVR4nO2Zv07DMBDGvyAeoWLoUFUIRRFTHyFTBgYGBp4BdWBmYmZmqDrwBAwdOmRg6iMwIBRFCFUMHarOrGWIDIl9ju8c2mToSZXy75dc7HO+rzbQcgTUwf5JtKWOr9YZeX0T/piChxcTnEZR5fhnlgHpeOtKQsofcWAAOI0iDC8m1rfz5Y0WAIBp/EI+IMkGtmd780fEdQCA8+tHcpsbXN6awPvzLbnNDS5vFJTqx5ebr99jyXSAZToG4B4JUj7QYQCYjXrkza9eN7VJ+PC/XdA/ibb5/A6zUQ/Ds4HxA4B8fkfeuAlvrYF9hdEFtuYDiiasqwEfvlstABRvEYfAIi+KRd933ZDi1TmWFvx3uJImu2CR1++7Qnp9q8H2A1wvIOVZfoDrBXx4lh/geAFf3miBQkT+hORmkdQ90wgpb4wCXbtt5sIWUt5IgNLuzyxjJyDlKwms1lkQXj5ULkimhZIt07FzJPjw1mGoi4pLiHx5owuUrgOoaPls1HOOAh++dTUkxejt/gkAsPz4ok47Q8IbHyJbP3NqwIevtIC64Op1A6XpABCHdY+l+XLU8TvxA+U3dRWutQjLmt5U3zvtD2odrn5sF56ArIF9egLyS7hPT+AcBRU5jYEwdREyvvZTrGu5dJ6Aw1sToDRcMk/A5Y0EVussUP/llZarCC8fWJ5AwnfTDyhY/2/P9QMSvpt+QEVZz5XGS4LDk0Woy2n5nKsbpLy1BR6/NxU/oLa5hVjm9SRYCfxXeM0PAM39QKc9QDkO6wWtrxe0/iXsZgKUlkvmCCS8db1AD878gA9/WC9ovQgP6wWH9YLW1wt+ACz5ViLxi7R/AAAAAElFTkSuQmCC", "powerup": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAAQCAYAAACm53kpAAABT0lEQVR4nO1XMZKDIBR92TGNh8hJrB3L1NhQcSgrmqXYXCBDnTPkAJ5hN0Us2CJLgghIwB1nZ/NmLBTef0/wPxV4wQ9SlYpUpfqr+ll8UpXqet6r63mfXCTHQK5+LP9trtB2R57VvhvgXQ3e1cjZxVT9WH4BwGvQJLvmiNNlE2dABucsoe8aD/E1t9AXeFd7ye9HjqEXo3HKxjeVamApfbtGiO/i3ntGfX48Dg3jmq+nzJ6b1PnhhXoyV99Zw+LP5klugbX53oUMcEchKE6XDWXy8bh8HW4HgKEXoEwG+35tfgpGC6CT25Wc2x3JTvQ55Oqb/KEXaBuKtqEYeuHlF75iesWBW7jEvI5sAzafdwCYVDG7mKKv0TYUgBG0TCpAToJ2Yt4XVKExVw37A0ifx3Bz9eeeEO+4z/yzN5FqYAn9LMR+tv7W/8Ha+i/8V3wD5+RZL+J5r9EAAAAASUVORK5CYII=", "stone": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAWUlEQVR4nGNgGAUUA0ZcEhoaBv+R+TduXMCqFqughobB/46OPjj/0qVLDMuWLcBqCBMxmhkYGBiiohIwXMXAwMDAgssLMI2EAE4vREUloIjh8gLFgTgKqAAA930jp3x4USkAAAAASUVORK5CYII=", "sword": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAYUlEQVR4nGNgGAXUBx+OBPwnRT0LNkE5OQ2Chjx6dIMRboCcnMb/KK0/cMlzly4RtNlIT+//o0c3GLG6YN+Rc3g1l2QlwF3AiC754UjAf72oG3gNgGlmYMARBsgKRgEdAAD7VyBcHaHmVQAAAABJRU5ErkJggg==", "wall": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABsklEQVR4nK2TvW4TQRSFv52d2fFq9zEoKHmQKLKsKLIsiwLxEpQ8Aj0CihAsCCggHsmdHRe2d2c9vxTRTpTaTDv3zL3nu2eK9+8+pLIsGY8xhrquMcbw8/dXrqZLUkpMJhNijHjvEUKglOJm9RG52WxQSlEUBcYYAJRSpJQA6LoOay1AFscYEUIAIMfC4/EIQNu2DMPAOJX3PguEEEgpsxigePniVeKMI6cXc7TWlGXJ7fdPXM9eU1UVKaVsS0qJc45ff26ZXS4A8lTycDhgrSXGCMBut6OqKmKMOOfw3tM0zTMmMUaUUo+PjB5HgEAWVlUFQEop359OJ4QQhBAIIfwHBovrNzjnCCHkjqOl+78rrqbLzKCua0IIeO9JKXF3f4Ncr9e0bUtKib7vMcZkqAD7/T4HKMZI0zRYa59yIITAWksIIfv13uOcA0AIQVEUOUCj97HB+Qxml4vsfXX3heX8LQB93+cipRRCCL79+Mz0Yv7UvSiQ2+0WrTVKKQAeHh7o+x6tNcMwoJTKO4fHnLRtS9d1aK0RY8bHvxBCQGtNSom2bdFaP8uI1jpvQUp5PoN/ImQSJa75zxoAAAAASUVORK5CYII="};
+
+// ====================================================================== constants
+let TILE = 32;
+const W = 800, H = 600, HUD = 64, MSG = 72, VIEW_H = H - HUD - MSG;
+const WALK = 0.14, BUMP = 0.12, SWING = 0.24, COUNTER = 0.30, SLIDE = 0.70, SHOT_PER_TILE = 0.045;
+const IMAGE_SLOTS = ["floor", "wall", "door", "loot", "player", "monster", "sword", "npc", "powerup", "boss", "arrow", "stone", "bolt"];
+const SOUND_SLOTS = ["music", "hit", "hurt", "defeat", "bump", "loot", "potion", "door", "win", "lose", "shoot", "cast", "powerup", "talk", "roar", "quake"];
+function tileFor(rows) { const cols = rows[0] ? rows[0].length : 1; for (const size of [64, 48]) if (cols * size <= W && rows.length * size <= VIEW_H) return size; return 32; }
+const canvas = document.getElementById("screen"), ctx = canvas.getContext("2d");
+
+// ====================================================================== the rules (same as the C# template)
+function roll(low, high) { return low + Math.floor(Math.random() * (high - low + 1)); }
+function clamp(v, low, high) { return v < low ? low : v > high ? high : v; }
+function damage(attackPower, defense) { const d = attackPower - defense; return d < 1 ? 1 : d; }
+function heal(hp) { return hp + 3; }
+function randomLoot() { const r = roll(1, 10); return r <= 3 ? "potion" : r <= 5 ? "gold" : r === 6 ? "shield" : r <= 8 ? "arrow" : "stone"; }
+
+// ====================================================================== reading mygame.txt
+function parseGame(text) {
+  const lines = text.replace(/\r/g, "").split("\n");
+  if (!lines[0] || !lines[0].startsWith("DUNGEON-EXPORT")) throw new Error("That text file is not a Dungeon export. Type export inside the text game to make one.");
+  const version = parseInt(lines[0].split(" ")[1], 10) || 1;
+  const game = { version, maxHp: 10, maxMana: 6, party: [], levels: [], start: {}, shots: { arrow: { power: 3, range: 6 }, stone: { power: 1, range: 3 } },
+                 spells: [], bolt: {}, shockEvery: { 1: 0, 2: 4, 3: 3 } };
+  const levelOf = n => game.levels.find(l => l.number === parseInt(n, 10));
+  for (let i = 1; i < lines.length; i++) {
+    const words = lines[i].split(" ");
+    if (words[0] === "MAXHP") game.maxHp = parseInt(words[1], 10) || 10;
+    else if (words[0] === "MAXMANA") game.maxMana = parseInt(words[1], 10) || 6;
+    else if (words[0] === "START") game.start[words[2]] = parseInt(words[1], 10) || 0;
+    else if (words[0] === "SHOT") game.shots[words[1]] = { power: parseInt(words[2], 10) || 1, range: parseInt(words[3], 10) || 1 };
+    else if (words[0] === "SPELL") game.spells.push({ cost: parseInt(words[1], 10) || 1, kind: words[2], name: words.slice(3).join(" ") });
+    else if (words[0] === "BOLT") game.bolt[words[1] + "," + words[2]] = parseInt(words[3], 10) || 0;
+    else if (words[0] === "BOSSPHASE") game.shockEvery[words[1]] = parseInt(words[2], 10) || 0;
+    else if (words[0] === "NPC") { const l = levelOf(words[1]); if (l) l.npc = words.slice(2).join(" ") || "Stranger"; }
+    else if (words[0] === "QUEST") { const l = levelOf(words[1]); if (l) l.need = words[2] || ""; }
+    else if (words[0] === "STARTS") { const l = levelOf(words[1]); if (l) l.starts = words.slice(2, 6).map(n => parseInt(n, 10) || 0); }
+    else if (words[0] === "POWERUP") { const l = levelOf(words[1]); if (l) l.powerups[words[2] + "," + words[3]] = words[4]; }
+    else if (words[0] === "SAY") {
+      const l = levelOf(words[1]), field = k => (lines[i + k] || "").slice(2);
+      if (l) l.lines.push({ nextA: parseInt(words[2], 10), nextB: parseInt(words[3], 10), text: field(1), a: field(2), b: field(3), gives: field(4) });
+      i += 4;
+    }
+    else if (words[0] === "CHARACTER") game.party.push({ name: words.slice(3).join(" "), hp: parseInt(words[1], 10), atk: parseInt(words[2], 10) });
+    else if (words[0] === "LEVEL") {
+      const level = { number: parseInt(words[1], 10), defense: parseInt(words[2], 10) || 0, rows: [], monsters: [], npc: "Stranger", need: "", starts: [0, 0, 0, 0], powerups: {}, lines: [] };
+      i++;
+      while (i < lines.length && lines[i] !== "END") { level.rows.push(lines[i]); i++; }
+      game.levels.push(level);
+    }
+    else if (words[0] === "MONSTER" || words[0] === "BOSS") {
+      const level = levelOf(words[1]);
+      if (level) level.monsters.push({ hp: parseInt(words[2], 10), atk: parseInt(words[3], 10), x: parseInt(words[4], 10), y: parseInt(words[5], 10), name: words.slice(6).join(" "), boss: words[0] === "BOSS" });
+    }
+  }
+  if (game.party.length === 0) throw new Error("The export has no characters in it.");
+  if (game.levels.length === 0) throw new Error("The export has no levels in it.");
+  if (version < 2) game.start = { potion: 2 };
+  if (game.spells.length === 0) game.spells = [{ cost: 2, kind: "spark", name: "spark" }, { cost: 3, kind: "mend", name: "mend" }, { cost: 4, kind: "quake", name: "quake" }];
+  return game;
+}
+
+function levelProblems(rows) {
+  const problems = [];
+  if (rows.length === 0) return ["the level has no rows"];
+  let starts = 0, doors = 0;
+  rows.forEach((row, y) => {
+    if (row.length !== rows[0].length) problems.push("row " + y + " is " + row.length + " long but row 0 is " + rows[0].length);
+    for (const ch of row) { if (!"#.@M$+N*B".includes(ch)) problems.push("row " + y + " has '" + ch + "', which is not in the tile alphabet"); if (ch === "@") starts++; if (ch === "+") doors++; }
+  });
+  if (starts !== 1) problems.push("there must be exactly one @ but there are " + starts);
+  if (doors < 1) problems.push("there is no + door");
+  if (rows.join("").split("B").length - 1 > 1) problems.push("a level can have one B boss");
+  return problems;
+}
+
+// ====================================================================== assets
+const files = {};          // lower-case file name -> { url, image }
+let settings = {};         // name -> words from assets.txt
+let spriteCache = {};
+let audioCtx = null, musicEl = null, musicKey = "", muted = false, synthTimer = null;
+
+function parseSettings(text) {
+  const out = {};
+  for (const raw of text.split("\n")) {
+    const line = raw.trim();
+    if (!line || line.startsWith("#")) continue;
+    const eq = line.indexOf("=");
+    if (eq < 1) continue;
+    const words = line.slice(eq + 1).trim().split(/\s+/).filter(Boolean);
+    if (words.length) out[line.slice(0, eq).trim().toLowerCase()] = words;
+  }
+  return out;
+}
+function option(words, key, fallback) {
+  for (let i = 1; i + 1 < words.length; i++) if (words[i].toLowerCase() === key && /^\d+$/.test(words[i + 1])) return parseInt(words[i + 1], 10);
+  return fallback;
+}
+function findFile(name, extensions) {
+  if (settings[name]) { const f = files[settings[name][0].toLowerCase().split(/[\\/]/).pop()]; if (f) return f; }
+  for (const ext of extensions) if (files[name + ext]) return files[name + ext];
+  return null;
+}
+function getSprite(name) {
+  name = name.toLowerCase();
+  if (spriteCache[name]) return spriteCache[name];
+  const sprite = { loaded: false, image: null, size: 0, col: 0, row: 0, gap: 0, margin: 0, frames: 1, directional: false, source: "" };
+  spriteCache[name] = sprite;
+  let file = findFile(name, [".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp"]), image = null;
+  if (file && file.image) { image = file.image; sprite.source = file.name; }
+  else if (builtinImages[name]) { image = builtinImages[name]; sprite.source = "built-in"; }
+  if (!image || !image.width) return sprite;
+  sprite.image = image; sprite.loaded = true;
+  const w = image.width, h = image.height, words = (file && settings[name]) ? settings[name] : [""];
+  if (words.length > 1) {
+    sprite.directional = option(words, "directions", 1) === 4;
+    sprite.size = option(words, "size", sprite.directional ? Math.floor(h / 4) : h) || h;
+    sprite.gap = option(words, "gap", 0); sprite.margin = option(words, "margin", 0);
+    sprite.col = option(words, "col", 0); sprite.row = option(words, "row", 0);
+    const whole = option(words, "col", -1) === -1 && option(words, "row", -1) === -1;
+    sprite.frames = option(words, "frames", whole ? Math.max(1, Math.floor((w - 2 * sprite.margin + sprite.gap) / (sprite.size + sprite.gap))) : 1);
+  }
+  else if (w === h) sprite.size = w;
+  else if (w > h && w % h === 0) { sprite.size = h; sprite.frames = w / h; }
+  else if (h % 4 === 0 && w % (h / 4) === 0) { sprite.size = h / 4; sprite.frames = w / (h / 4); sprite.directional = true; }
+  if (sprite.frames < 1) sprite.frames = 1;
+  return sprite;
+}
+function pickMonster(name) { const n = S.level.number; for (const c of ["monster_" + name + n, "monster" + n, "monster_" + name]) { const s = getSprite(c); if (s.loaded) return s; } return getSprite("monster"); }
+function pick(first, second) { const s = getSprite(first); return s.loaded ? s : getSprite(second); }
+
+const builtinImages = {};
+function loadBuiltins() {
+  return Promise.all(Object.keys(BUILTIN_ART).map(name => new Promise(done => {
+    const img = new Image(); img.onload = () => { builtinImages[name] = img; done(); }; img.onerror = done; img.src = BUILTIN_ART[name];
+  })));
+}
+
+async function addFiles(list) {
+  let gameText = null, count = 0, problems = [];
+  for (const file of list) {
+    const name = file.name.toLowerCase();
+    if (name === "assets.txt") { settings = parseSettings(await file.text()); count++; }
+    else if (name.endsWith(".txt")) { const text = await file.text(); if (text.startsWith("DUNGEON-EXPORT")) gameText = text; }
+    else if (/\.(png|jpe?g|bmp|gif|webp)$/.test(name)) {
+      const url = URL.createObjectURL(file);
+      await new Promise(done => { const img = new Image(); img.onload = () => { files[name] = { name: file.name, url, image: img }; count++; done(); }; img.onerror = () => { problems.push(file.name + " could not be read as a picture"); done(); }; img.src = url; });
+    }
+    else if (/\.(wav|ogg|mp3|m4a)$/.test(name)) { files[name] = { name: file.name, url: URL.createObjectURL(file) }; count++; }
+  }
+  spriteCache = {};
+  if (gameText !== null) {
+    try { startGame(parseGame(gameText)); setStatus("Loaded your game" + (count ? " and " + count + " asset file(s)." : ".")); }
+    catch (e) { setStatus(e.message); }
+  } else if (count) { setStatus("Loaded " + count + " asset file(s)."); if (S) playMusic(S.level.number, true); }
+  else setStatus("Nothing usable in that drop. Expected mygame.txt, pictures (.png) or sounds (.wav .ogg .mp3).");
+  if (problems.length) setStatus(problems.join("; "));
+  refreshInfo();
+}
+
+// ---------------------------------------------------------------------- sound
+function ensureAudio() { if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { audioCtx = null; } } if (audioCtx && audioCtx.state === "suspended") audioCtx.resume(); }
+function beep(freqs, step, type, volume) {
+  if (!audioCtx || muted) return;
+  freqs.forEach((f, i) => {
+    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(), t0 = audioCtx.currentTime + i * step;
+    osc.type = type; osc.frequency.setValueAtTime(f[0], t0); osc.frequency.linearRampToValueAtTime(f[1], t0 + step);
+    gain.gain.setValueAtTime(volume, t0); gain.gain.linearRampToValueAtTime(0.0001, t0 + step);
+    osc.connect(gain).connect(audioCtx.destination); osc.start(t0); osc.stop(t0 + step + 0.02);
+  });
+}
+const N = n => 440 * Math.pow(2, (n - 69) / 12), flat = n => [N(n), N(n)];
+const SYNTH = {
+  hit: () => beep([[700, 180]], 0.12, "square", 0.12), hurt: () => beep([[300, 90]], 0.22, "square", 0.12), bump: () => beep([[110, 90]], 0.07, "triangle", 0.25),
+  defeat: () => beep([[500, 900], [900, 200]], 0.12, "square", 0.1), loot: () => beep([72, 76, 79, 84].map(flat), 0.07, "square", 0.1),
+  potion: () => beep([60, 64, 67, 72, 76].map(flat), 0.06, "triangle", 0.2), door: () => beep([67, 64, 60, 57, 55, 52].map(flat), 0.09, "triangle", 0.2),
+  shoot: () => beep([[1400, 500]], 0.1, "square", 0.08), cast: () => beep([[300, 1200], [1200, 900]], 0.13, "square", 0.08),
+  powerup: () => beep([60, 64, 67, 72, 76, 79, 84].map(flat), 0.06, "square", 0.09), talk: () => beep([76, 72, 76].map(flat), 0.05, "triangle", 0.18),
+  roar: () => beep([[180, 60]], 0.6, "sawtooth", 0.16), quake: () => beep([[70, 40]], 0.45, "triangle", 0.3),
+  win: () => beep([72, 72, 72, 76, 79, 84].map(flat), 0.16, "square", 0.1), lose: () => beep([64, 63, 62, 57].map(flat), 0.3, "square", 0.1),
+};
+function sfx(name) {
+  if (muted) return;
+  const file = findFile(name, [".wav", ".ogg", ".mp3", ".m4a"]);
+  if (file) { const a = new Audio(file.url); a.volume = 0.8; a.play().catch(() => {}); }
+  else if (SYNTH[name]) SYNTH[name]();
+}
+const TUNE = [[69,0,72,76,0,72,76,81],[79,0,76,72,0,76,74,72],[65,0,69,72,0,69,72,77],[76,0,74,71,0,67,71,74],[69,0,72,76,0,72,76,81],[83,0,81,79,0,76,79,81],[77,0,76,74,0,72,74,76],[76,0,0,71,0,68,71,76]];
+const BASS = [45, 48, 41, 43, 45, 48, 41, 40];
+function startSynthMusic() {
+  stopSynthMusic();
+  if (!audioCtx) return;
+  const beat = 60 / 132 / 2; let next = audioCtx.currentTime + 0.1, index = 0;
+  synthTimer = setInterval(() => {
+    while (audioCtx && next < audioCtx.currentTime + 0.3) {
+      const bar = Math.floor(index / 8) % 8, k = index % 8, lead = TUNE[bar][k];
+      if (!muted) {
+        const play = (freq, type, vol, len) => { const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.type = type; o.frequency.value = freq; g.gain.setValueAtTime(vol, next); g.gain.linearRampToValueAtTime(0.0001, next + len); o.connect(g).connect(audioCtx.destination); o.start(next); o.stop(next + len + 0.02); };
+        if (lead) play(N(lead), "square", 0.045, beat * 0.9);
+        play(N(BASS[bar] + (k % 2 ? 12 : 0)), "triangle", 0.12, beat * 0.8);
+      }
+      next += beat; index++;
+    }
+  }, 100);
+}
+function stopSynthMusic() { if (synthTimer) { clearInterval(synthTimer); synthTimer = null; } }
+function playMusic(levelNumber, force) {
+  const ext = [".ogg", ".mp3", ".wav", ".m4a"], file = findFile("music" + levelNumber, ext) || findFile("music", ext), key = file ? file.url : "synth";
+  if (key === musicKey && !force) return;
+  musicKey = key;
+  if (musicEl) { musicEl.pause(); musicEl = null; }
+  stopSynthMusic();
+  if (file) { musicEl = new Audio(file.url); musicEl.loop = true; musicEl.volume = muted ? 0 : 0.6; musicEl.play().catch(() => {}); }
+  else startSynthMusic();
+}
+function toggleMute() { muted = !muted; if (musicEl) musicEl.volume = muted ? 0 : 0.6; }
+
+// ====================================================================== game state
+let GAME = null, S = null;
+const log = [], floats = [];
+function say(text) { log.push(text); if (log.length > 50) log.shift(); }
+
+function startGame(game) {
+  GAME = game;
+  const chooser = document.getElementById("startLevel");
+  chooser.innerHTML = game.levels.map((l, i) => "<option value=" + i + ">Level " + l.number + (i === game.levels.length - 1 ? " (MyLevel)" : "") + "</option>").join("");
+  newRun();
+}
+function newRun() {
+  S = { party: GAME.party.map(c => ({ name: c.name, hp: clamp(c.hp, 0, GAME.maxHp), atk: c.atk })), inventory: [], defense: 0, mana: GAME.maxMana, turns: 0, powers: [], flags: new Set(), talk: null, shot: null, shake: 0, bossPhase: 1,
+        levelIndex: 0, mode: S && S.mode !== "title" ? "play" : "title", timer: 0, applied: false, facing: 0, walkFrame: 0, target: -1,
+        playerFlash: 0, monsterFlash: 0, bumpQuiet: 0, old: null };
+  for (const item in GAME.start) for (let k = 0; k < GAME.start[item]; k++) S.inventory.push(item);
+  S.party.forEach(c => { if (c.hp <= 0) c.hp = 1; });
+  S.leader = 0; S.party.forEach((c, i) => { if (c.atk > S.party[S.leader].atk) S.leader = i; });
+  log.length = 0; floats.length = 0;
+  loadLevel(clamp(parseInt(document.getElementById('startLevel').value, 10) || 0, 0, GAME.levels.length - 1));
+}
+function loadLevel(index) {
+  const src = GAME.levels[index];
+  S.levelIndex = index;
+  S.level = { number: src.number, defense: src.defense, rows: src.rows.slice(), monsters: src.monsters.map(m => ({ ...m, maxHp: m.hp })),
+              npc: src.npc, need: src.need, starts: src.starts, powerups: src.powerups, lines: src.lines };
+  S.level.rows.forEach((row, y) => { for (let x = 0; x < row.length; x++) if (row[x] === "B" && !S.level.monsters.some(m => m.boss)) { const m = S.level.monsters.find(k => k.x === x && k.y === y); if (m) m.boss = true; } });
+  S.mana = GAME.maxMana; S.talk = null; S.shot = null; S.bossPhase = 1;
+  S.problems = levelProblems(S.level.rows);
+  TILE = tileFor(S.level.rows);
+  S.x = -1; S.y = -1;
+  S.level.rows.forEach((row, y) => { const x = row.indexOf("@"); if (x >= 0 && S.x < 0) { S.x = x; S.y = y; } });
+  S.fromX = S.x; S.fromY = S.y;
+  say("----- LEVEL " + src.number + (index === GAME.levels.length - 1 ? " : MY LEVEL" : "") + " -----");
+  S.problems.forEach(p => say("LEVEL PROBLEM: " + p + "."));
+  if (S.problems.length) S.mode = "broken";
+  if (audioCtx) playMusic(src.number, false);
+  refreshInfo();
+}
+function tileAt(rows, x, y) { if (y < 0 || y >= rows.length) return "#"; if (x < 0 || x >= rows[y].length) return "#"; return rows[y][x]; }
+function setTile(rows, x, y, tile) { rows[y] = rows[y].slice(0, x) + tile + rows[y].slice(x + 1); }
+function countItem(item) { return S.inventory.filter(i => i === item).length; }
+function monsterAt(x, y) { return S.level.monsters.findIndex(m => m.hp > 0 && m.x === x && m.y === y); }
+function removeItem(item) { const at = S.inventory.indexOf(item); if (at < 0) return false; S.inventory.splice(at, 1); return true; }
+function hasPower(name) { return S.powers.some(p => p.name === name); }
+function addPower(name, turns) { const p = S.powers.find(k => k.name === name); if (p) p.turns = turns; else S.powers.push({ name, turns }); say("Power up: " + name + " for " + turns + " turns!"); }
+function theBoss() { return S.level.monsters.find(m => m.boss) || null; }
+function doorSealed() { const b = theBoss(); return !!b && b.hp > 0; }
+function bossPhase(hp, maxHp) { return hp * 3 > maxHp * 2 ? 1 : hp * 3 > maxHp ? 2 : 3; }
+// The first living monster in a straight line, or -1. The same rules as TargetInLine in Ranged.cs.
+function targetInLine(stepX, stepY, range) {
+  for (let i = 1; i <= range; i++) { const t = tileAt(S.level.rows, S.x + stepX * i, S.y + stepY * i); if ("#N+".includes(t)) return -1; if (t === "M" || t === "B") return monsterAt(S.x + stepX * i, S.y + stepY * i); }
+  return -1;
+}
+function shotLength(stepX, stepY, range) {
+  for (let i = 1; i <= range; i++) { const t = tileAt(S.level.rows, S.x + stepX * i, S.y + stepY * i); if ("#N+".includes(t)) return i - 1; if (t === "M" || t === "B") return i; }
+  return range;
+}
+function questState() {
+  const n = S.level.number;
+  if (S.flags.has("done " + n)) return 3;
+  if (!S.flags.has("started " + n)) return 0;
+  const need = S.level.need, ready = need === "gold" ? countItem("gold") >= 3 : need === "boss" ? S.flags.has("boss down " + n) : need === "monsters" ? S.level.monsters.every(m => m.hp <= 0) : true;
+  return ready ? 2 : 1;
+}
+const NEED_WORDS = { gold: "bring 3 gold", boss: "beat the boss", monsters: "beat every monster on this level" };
+function give(item, count) { for (let k = 0; k < count; k++) S.inventory.push(item); say("(You get " + count + " x " + item + ".)"); }
+function doAction(action) {
+  const n = S.level.number;
+  if (action === "start quest") { S.flags.add("started " + n); say("(Quest started: " + (NEED_WORDS[S.level.need] || "nothing") + ".)"); }
+  else if (action === "finish quest") { if (S.level.need === "gold") for (let k = 0; k < 3; k++) removeItem("gold"); S.flags.add("done " + n); if (S.level.need) say("(Quest finished!)"); }
+  else if (action === "give potion") give("potion", 1);
+  else if (action === "give arrows") give("arrow", 3);
+  else if (action === "give stones") give("stone", 3);
+  else if (action === "give shield") give("shield", 1);
+  else if (action === "give gold") give("gold", 2);
+  else if (action === "heal party") { S.party.forEach(c => { if (c.hp > 0) c.hp = GAME.maxHp; }); say("Everyone still standing is back to full health."); }
+  else if (action === "restore mana") { S.mana = GAME.maxMana; say("Your mana is full."); }
+  else if (["power might", "power guard", "power regen"].includes(action)) addPower(action.slice(6), 12);
+  if (action) sfx(action.startsWith("power") ? "powerup" : action === "restore mana" || action === "heal party" ? "potion" : "loot");
+}
+// The same end of turn as Program.cs.
+function endTurn() {
+  const leader = S.party[S.leader];
+  S.turns++;
+  if (S.turns % 4 === 0) S.mana = clamp(S.mana + 1, 0, GAME.maxMana);
+  S.level.monsters.forEach(m => { if (m.hp <= 0 && "MB".includes(tileAt(S.level.rows, m.x, m.y))) { say(m.name + " is defeated!"); setTile(S.level.rows, m.x, m.y, "."); S.inventory.push("gold"); say("You found: gold!"); sfx("defeat"); } });
+  const boss = theBoss(), guard = hasPower("guard") ? 2 : 0;
+  if (boss && boss.hp <= 0 && !S.flags.has("boss down " + S.level.number)) { S.flags.add("boss down " + S.level.number); say("The door is open."); sfx("door"); }
+  if (doorSealed()) {
+    const phase = bossPhase(boss.hp, boss.maxHp);
+    if (phase !== S.bossPhase) { S.bossPhase = phase; say(phase === 2 ? boss.name + " roars. The floor starts to shake." : boss.name + " is enraged!"); if (phase === 3) boss.atk += 2; sfx("roar"); S.shake = 0.5; }
+    const every = GAME.shockEvery[phase] || 0;
+    if (every > 0 && S.turns % every === 0) {
+      const amount = damage(2, guard); say(boss.name + " slams the ground!");
+      S.party.forEach(c => { if (c.hp > 0) { c.hp = clamp(c.hp - amount, 0, 99); say("  " + c.name + " takes " + amount + "."); } });
+      sfx("quake"); S.shake = 0.35; S.playerFlash = 0.3; addFloat("-" + amount, S.x * TILE + 10, S.y * TILE, "#ff6e6e");
+    }
+  }
+  if (leader.hp > 0 && hasPower("regen")) leader.hp = clamp(leader.hp + 1, 0, GAME.maxHp);
+  for (let i = S.powers.length - 1; i >= 0; i--) { S.powers[i].turns--; if (S.powers[i].turns <= 0) { say("The " + S.powers[i].name + " wears off."); S.powers.splice(i, 1); } }
+  if (leader.hp <= 0) { say(leader.name + " has fallen!"); const next = S.party.findIndex(c => c.hp > 0); if (next >= 0) S.leader = next; }
+  if (!S.party.some(c => c.hp > 0)) { say("The whole party has fallen. GAME OVER."); sfx("lose"); S.mode = "lost"; S.timer = 0; }
+}
+
+// ====================================================================== input
+const held = new Set(), pressed = new Set();
+const KEYMAP = { ArrowLeft: "left", a: "left", A: "left", ArrowRight: "right", d: "right", D: "right", ArrowUp: "up", w: "up", W: "up", ArrowDown: "down", s: "down", S: "down",
+                 f: "fire", F: "fire", t: "throw", T: "throw", 1: "n1", 2: "n2", 3: "n3", 4: "n4",
+                 p: "potion", P: "potion", Tab: "leader", m: "mute", M: "mute", r: "restart", R: "restart", Enter: "confirm", " ": "confirm" };
+canvas.addEventListener("keydown", e => { const k = KEYMAP[e.key]; if (!k) return; e.preventDefault(); ensureAudio(); if (!held.has(k)) pressed.add(k); held.add(k); });
+canvas.addEventListener("keyup", e => { const k = KEYMAP[e.key]; if (k) held.delete(k); });
+canvas.addEventListener("blur", () => held.clear());
+canvas.addEventListener("pointerdown", () => { canvas.focus(); ensureAudio(); if (S && S.mode === "title") pressed.add("confirm"); });
+
+// ====================================================================== update
+function update(dt) {
+  S.timer += dt;
+  S.playerFlash -= dt; S.monsterFlash -= dt; S.bumpQuiet -= dt; S.shake -= dt;
+  const faceX = S.facing === 1 ? -1 : S.facing === 2 ? 1 : 0, faceY = S.facing === 3 ? -1 : S.facing === 0 ? 1 : 0;
+  if (pressed.has("mute")) toggleMute();
+  const leader = S.party[S.leader];
+
+  if (S.mode === "title") { if (pressed.has("confirm")) { S.mode = S.problems.length ? "broken" : "play"; playMusic(S.level.number, false); } }
+  else if (S.mode === "play") {
+    if (pressed.has("potion")) {
+      const at = S.inventory.indexOf("potion");
+      if (at >= 0) { S.inventory.splice(at, 1); const before = leader.hp; leader.hp = clamp(heal(leader.hp), 0, GAME.maxHp); say(leader.name + " drinks a potion."); sfx("potion"); addFloat("+" + (leader.hp - before), S.x * TILE + 8, S.y * TILE, "#78f08c"); }
+      else say("You have no potions.");
+    }
+    else if (pressed.has("leader")) {
+      for (let k = 1; k <= S.party.length; k++) { const next = (S.leader + k) % S.party.length; if (S.party[next].hp > 0) { if (next !== S.leader) say(S.party[next].name + " steps to the front."); S.leader = next; break; } }
+    }
+    else if (pressed.has("fire") || pressed.has("throw")) {
+      const ammo = pressed.has("fire") ? "arrow" : "stone";
+      if (countItem(ammo) === 0) { say("You have no " + ammo + "s."); sfx("bump"); }
+      else { S.shot = { kind: ammo, spell: null, stepX: faceX, stepY: faceY, length: shotLength(faceX, faceY, GAME.shots[ammo].range) }; sfx("shoot"); S.mode = "shot"; S.timer = 0; }
+    }
+    else if (["n1", "n2", "n3", "n4"].some(k => pressed.has(k))) {
+      const spell = GAME.spells[["n1", "n2", "n3", "n4"].findIndex(k => pressed.has(k))];
+      if (spell) {
+        if (S.mana < spell.cost) { say("Not enough mana. " + spell.name + " costs " + spell.cost + " and you have " + S.mana + "."); sfx("bump"); }
+        else if (spell.kind === "mend") { const before = leader.hp; leader.hp = clamp(leader.hp + 5, 0, GAME.maxHp); S.mana -= spell.cost; say(leader.name + " is mended."); sfx("potion"); addFloat("+" + (leader.hp - before), S.x * TILE + 8, S.y * TILE, "#78f08c"); endTurn(); }
+        else if (spell.kind === "quake") {
+          let hit = 0;
+          S.level.monsters.forEach(m => { if (m.hp > 0 && Math.abs(m.x - S.x) <= 2 && Math.abs(m.y - S.y) <= 2) { m.hp = clamp(m.hp - 3, 0, 99); say("The quake hits " + m.name + " for 3."); addFloat("-3", m.x * TILE + 10, m.y * TILE, "#ffffff"); hit++; } });
+          if (!hit) say("The ground shakes. Nothing is close enough.");
+          S.mana -= spell.cost; sfx("quake"); S.shake = 0.35; endTurn();
+        }
+        else { S.shot = { kind: "spell_" + spell.name, spell, stepX: faceX, stepY: faceY, length: shotLength(faceX, faceY, 4) }; sfx("cast"); S.mode = "shot"; S.timer = 0; }
+      }
+    }
+    else {
+      const stepX = held.has("left") ? -1 : held.has("right") ? 1 : 0, stepY = stepX ? 0 : held.has("up") ? -1 : held.has("down") ? 1 : 0;
+      if (stepX || stepY) {
+        S.facing = stepX < 0 ? 1 : stepX > 0 ? 2 : stepY < 0 ? 3 : 0;
+        const nx = S.x + stepX, ny = S.y + stepY, tile = tileAt(S.level.rows, nx, ny);
+        S.timer = 0; S.applied = false;
+        if (tile === "#") { S.mode = "bump"; if (S.bumpQuiet <= 0) { sfx("bump"); S.bumpQuiet = 0.4; } }
+        else if (tile === "N") {
+          const lines = S.level.lines, start = S.level.starts[questState()] || 0;
+          S.talk = { line: lines.length ? clamp(start, 0, lines.length - 1) : -1, isNew: true }; sfx("talk"); S.mode = "talk";
+        }
+        else if (tile === "+" && doorSealed()) { S.mode = "bump"; if (S.bumpQuiet <= 0) { say("The door is sealed while " + theBoss().name + " lives."); sfx("bump"); S.bumpQuiet = 0.8; } }
+        else if ((tile === "M" || tile === "B") && monsterAt(nx, ny) >= 0) { S.target = monsterAt(nx, ny); S.mode = "swing"; }
+        else { S.fromX = S.x; S.fromY = S.y; S.x = nx; S.y = ny; S.walkFrame++; S.mode = "walk"; }
+      }
+    }
+  }
+  else if (S.mode === "bump") { if (S.timer >= BUMP) S.mode = "play"; }
+  else if (S.mode === "walk") {
+    if (S.timer >= WALK) {
+      S.fromX = S.x; S.fromY = S.y; S.mode = "play";
+      const tile = tileAt(S.level.rows, S.x, S.y);
+      if (tile === "$") {
+        const item = randomLoot(); S.inventory.push(item); say("You found: " + item + "!");
+        if (item === "arrow") { S.inventory.push("arrow"); S.inventory.push("arrow"); }
+        setTile(S.level.rows, S.x, S.y, "."); sfx("loot"); addFloat(item + "!", S.x * TILE - 4, S.y * TILE, "#fadc6e");
+      }
+      else if (tile === "*") {
+        const power = S.level.powerups[S.x + "," + S.y] || ["might", "guard", "regen"][(S.x + S.y) % 3];
+        addPower(power, 10); setTile(S.level.rows, S.x, S.y, "."); sfx("powerup"); addFloat(power + "!", S.x * TILE - 4, S.y * TILE, "#fad650");
+      }
+      else if (tile === "+") {
+        sfx("door");
+        if (S.levelIndex >= GAME.levels.length - 1) { say("You escaped the dungeon with " + countItem("gold") + " gold. YOU WIN!"); sfx("win"); S.mode = "won"; }
+        else { S.old = { rows: S.level.rows, number: S.level.number, tile: TILE, camX: camX(S.level.rows, S.x * TILE), camY: camY(S.level.rows, S.y * TILE) }; loadLevel(S.levelIndex + 1); if (S.mode !== "broken") S.mode = "slide"; }
+        S.timer = 0;
+      }
+      if (S.mode === "play") endTurn();
+    }
+  }
+  else if (S.mode === "shot") {
+    if (S.timer >= Math.max(1, S.shot.length) * SHOT_PER_TILE) {
+      const shot = S.shot, range = shot.spell ? 4 : GAME.shots[shot.kind].range, at = targetInLine(shot.stepX, shot.stepY, range);
+      const m = at >= 0 ? S.level.monsters[at] : null;
+      let dealt = 0;
+      if (!shot.spell) {
+        removeItem(shot.kind);
+        if (!m) say("The " + shot.kind + " hits nothing.");
+        else { dealt = damage(GAME.shots[shot.kind].power + (hasPower("might") ? 2 : 0) + roll(0, 1), S.level.defense); say(leader.name + "'s " + shot.kind + " hits " + m.name + " for " + dealt + "."); }
+      } else {
+        S.mana -= shot.spell.cost;
+        if (!m) say("The " + shot.spell.name + " fizzles against the wall.");
+        else {
+          const distance = Math.abs(m.x - S.x) + Math.abs(m.y - S.y);
+          dealt = shot.spell.kind === "spark" ? 4 : clamp(GAME.bolt[clamp(leader.atk, 1, 5) + "," + clamp(distance, 1, 4)] || 0, 0, 9);
+          say(leader.name + "'s " + shot.spell.name + " burns " + m.name + " for " + dealt + ".");
+        }
+      }
+      if (m) { m.hp = clamp(m.hp - dealt, 0, 99); S.target = at; S.monsterFlash = 0.25; sfx("hit"); addFloat("-" + dealt, m.x * TILE + 10, m.y * TILE, "#ffffff"); }
+      S.shot = null; S.mode = "play"; endTurn();
+    }
+  }
+  else if (S.mode === "talk") {
+    const line = S.talk.line >= 0 ? S.level.lines[S.talk.line] : null;
+    if (!line) { if (pressed.has("confirm")) S.mode = "play"; }
+    else {
+      if (S.talk.isNew) { doAction(line.gives); S.talk.isNew = false; }
+      let next = null;
+      if (line.a === "") { if (pressed.has("confirm")) next = line.nextA; }
+      else if (pressed.has("n1")) next = line.nextA;
+      else if (pressed.has("n2") && line.b !== "") next = line.nextB;
+      if (next !== null && next !== S.talk.line) {
+        if (next < 0 || next >= S.level.lines.length) { S.talk = null; S.mode = "play"; }
+        else { S.talk = { line: next, isNew: true }; sfx("talk"); }
+      }
+    }
+  }
+  else if (S.mode === "swing") {
+    const m = S.level.monsters[S.target];
+    if (!S.applied && S.timer >= SWING * 0.5) {
+      S.applied = true;
+      const dealt = damage(leader.atk + (hasPower("might") ? 2 : 0) + roll(0, 2), S.level.defense);
+      m.hp = clamp(m.hp - dealt, 0, 99); say(leader.name + " hits " + m.name + " for " + dealt + ".");
+      sfx("hit"); S.monsterFlash = 0.25; addFloat("-" + dealt, m.x * TILE + 10, m.y * TILE, "#ffffff");
+    }
+    if (S.timer >= SWING) {
+      S.timer = 0; S.applied = false;
+      if (m.hp > 0) S.mode = "counter";
+      else { S.mode = "play"; endTurn(); }
+    }
+  }
+  else if (S.mode === "counter") {
+    const m = S.level.monsters[S.target];
+    if (!S.applied && S.timer >= COUNTER * 0.5) {
+      S.applied = true;
+      const dealt = damage(m.atk + roll(0, 1), clamp(countItem("shield"), 0, 3) + (hasPower("guard") ? 2 : 0));
+      leader.hp = clamp(leader.hp - dealt, 0, 99); say(m.name + " hits " + leader.name + " for " + dealt + ".");
+      sfx("hurt"); S.playerFlash = 0.3; addFloat("-" + dealt, S.x * TILE + 10, S.y * TILE, "#ff6e6e");
+    }
+    if (S.timer >= COUNTER) { S.mode = "play"; endTurn(); }
+  }
+  else if (S.mode === "slide") { if (S.timer >= SLIDE) S.mode = "play"; }
+  else if (S.mode === "won" || S.mode === "lost") { if (pressed.has("restart")) { S.mode = "play"; newRun(); } }
+  pressed.clear();
+}
+
+// ====================================================================== draw
+let clock = 0;
+function camX(rows, px) { const width = (rows[0] ? rows[0].length : 1) * TILE; return width <= W ? -(W - width) / 2 : clamp(px + TILE / 2 - W / 2, 0, width - W); }
+function camY(rows, py) { const height = rows.length * TILE; return height <= VIEW_H ? -(VIEW_H - height) / 2 : clamp(py + TILE / 2 - VIEW_H / 2, 0, height - VIEW_H); }
+function addFloat(text, x, y, color) { floats.push({ text, x, y, color, age: 0 }); }
+
+function drawSprite(sprite, x, y, frame, dir, rotation, blink) {
+  let sx = 0, sy = 0, sw = sprite.image.width, sh = sprite.image.height;
+  if (sprite.size > 0) { sx = sprite.margin + (sprite.col + frame % sprite.frames) * (sprite.size + sprite.gap); sy = sprite.margin + (sprite.row + (sprite.directional ? dir : 0)) * (sprite.size + sprite.gap); sw = sh = sprite.size; }
+  ctx.save();
+  ctx.translate(Math.round(x) + TILE / 2, Math.round(y) + TILE / 2);
+  if (rotation) ctx.rotate(rotation * Math.PI / 180);
+  if (!sprite.directional && dir === 1) ctx.scale(-1, 1);
+  if (blink) ctx.globalAlpha = 0.35;
+  ctx.drawImage(sprite.image, sx, sy, sw, sh, -TILE / 2, -TILE / 2, TILE, TILE);
+  ctx.restore();
+}
+function drawTile(kind, number, x, y) {
+  const sprite = pick(kind + number, kind);
+  if (sprite.loaded) return drawSprite(sprite, x, y, Math.floor(clock * 4), 0, 0, false);
+  const colors = { wall: "#605a70", floor: "#5c544a", door: "#f0c85a", loot: "#ba7a3a", npc: "#9e68cc", powerup: "#fad650" };
+  ctx.fillStyle = colors[kind]; ctx.fillRect(x + (kind === "wall" || kind === "floor" ? 0 : 6), y + (kind === "wall" || kind === "floor" ? 0 : 6), kind === "wall" || kind === "floor" ? TILE : TILE - 12, kind === "wall" || kind === "floor" ? TILE : TILE - 12);
+}
+function drawActor(name, x, y, frame, dir, flash) {
+  const sprite = name === "player" ? pick("player" + S.level.number, "player") : pickMonster(name), blink = flash > 0 && Math.floor(clock * 30) % 2 === 0;
+  if (sprite.loaded) return drawSprite(sprite, x, y, frame, dir, 0, blink);
+  ctx.fillStyle = blink ? "#ff5a5a" : name === "player" ? "#5c88e6" : "#6ebe46"; ctx.beginPath(); ctx.arc(x + TILE / 2, y + TILE / 2, TILE / 2 - 4, 0, 7); ctx.fill();
+}
+function pickBoss(name) { const n = S.level.number, lower = name.toLowerCase().replace(/ /g, ""); for (const c of ["boss_" + lower + n, "boss" + n, "boss_" + lower, "boss"]) { const s = getSprite(c); if (s.loaded) return s; } return pickMonster(name); }
+function drawBoss(name, x, y, frame, flash) {
+  const sprite = pickBoss(name), blink = flash > 0 && Math.floor(clock * 30) % 2 === 0;
+  if (!sprite.loaded) { ctx.fillStyle = blink ? "#ff5a5a" : "#b03a42"; ctx.beginPath(); ctx.arc(x + TILE / 2, y + TILE / 2, TILE / 2, 0, 7); ctx.fill(); return; }
+  const keep = TILE, grow = TILE * 0.125; TILE = Math.floor(TILE * 1.25); drawSprite(sprite, x - grow, y - grow * 2, frame, 0, 0, blink); TILE = keep;
+}
+function drawProjectile(kind, x, y, angle) {
+  let sprite = pick(kind + S.level.number, kind);
+  if (!sprite.loaded && kind.startsWith("spell_")) sprite = pick("bolt" + S.level.number, "bolt");
+  if (sprite.loaded) return drawSprite(sprite, x, y, Math.floor(clock * 10), 0, angle, false);
+  ctx.fillStyle = kind === "arrow" ? "#e6eaf4" : kind === "stone" ? "#9696a4" : "#78beff"; ctx.beginPath(); ctx.arc(x + TILE / 2, y + TILE / 2, TILE / 8 + 1, 0, 7); ctx.fill();
+}
+function wrapText(str, size, width) {
+  ctx.font = "bold " + size + "px ui-monospace, Menlo, Consolas, monospace";
+  const out = []; let line = "";
+  str.split(" ").filter(w => w).forEach(word => { const attempt = line ? line + " " + word : word; if (line && ctx.measureText(attempt).width > width) { out.push(line); line = word; } else line = attempt; });
+  if (line) out.push(line); return out;
+}
+function drawDialogue(name, line) {
+  const x = 40, width = W - 80, height = 150, y = H - MSG - height - 8;
+  ctx.fillStyle = "rgba(16,14,26,.94)"; ctx.fillRect(x, y, width, height); ctx.strokeStyle = "#f0c85a"; ctx.lineWidth = 2; ctx.strokeRect(x, y, width, height);
+  ctx.font = "bold 15px ui-monospace, Menlo, Consolas, monospace"; const tag = ctx.measureText(name).width + 16;
+  ctx.fillStyle = "#f0c85a"; ctx.fillRect(x + 12, y - 12, tag, 24); text(name, x + 20, y - 8, 15, "#14101e");
+  wrapText(line.text, 15, width - 32).slice(0, 3).forEach((row, i) => text(row, x + 16, y + 22 + i * 20, 15, "#fff"));
+  if (line.a === "") { if (Math.floor(clock * 2) % 2 === 0) text("ENTER", x + width - 16, y + height - 24, 13, "#f0c85a", "right"); }
+  else { text("1   " + line.a, x + 16, y + height - 50, 15, "#aadcff"); if (line.b !== "") text("2   " + line.b, x + 16, y + height - 28, 15, "#aadcff"); }
+}
+function drawMap(rows, number, offX, offY) {
+  for (let y = 0; y < rows.length; y++) for (let x = 0; x < rows[y].length; x++) {
+    const sx = x * TILE + offX, sy = y * TILE + offY;
+    if (sx < -TILE || sx > W || sy < -TILE || sy > H) continue;
+    const tile = rows[y][x];
+    if (tile === "#") drawTile("wall", number, sx, sy);
+    else { drawTile("floor", number, sx, sy); if (tile === "+") drawTile("door", number, sx, sy); else if (tile === "$") drawTile("loot", number, sx, sy); else if (tile === "*") drawTile("powerup", number, sx, sy); else if (tile === "N") drawTile("npc", number, sx, sy); }
+  }
+}
+function text(str, x, y, size, color, align) { ctx.font = "bold " + size + "px ui-monospace, Menlo, Consolas, monospace"; ctx.textAlign = align || "left"; ctx.textBaseline = "top"; ctx.fillStyle = color; ctx.fillText(str, x, y); }
+function shade(alpha) { ctx.fillStyle = "rgba(0,0,0," + alpha + ")"; ctx.fillRect(0, 0, W, H); }
+
+function draw(dt) {
+  ctx.imageSmoothingEnabled = false;
+  ctx.fillStyle = "#100e16"; ctx.fillRect(0, 0, W, H);
+  const dirX = S.facing === 1 ? -1 : S.facing === 2 ? 1 : 0, dirY = S.facing === 3 ? -1 : S.facing === 0 ? 1 : 0;
+  const t = S.mode === "walk" ? clamp(S.timer / WALK, 0, 1) : 1;
+  let px = (S.fromX + (S.x - S.fromX) * t) * TILE, py = (S.fromY + (S.y - S.fromY) * t) * TILE;
+  if (S.mode === "bump") { const n = Math.sin(clamp(S.timer / BUMP, 0, 1) * Math.PI) * TILE * 0.16; px += dirX * n; py += dirY * n; }
+  if (S.mode === "swing") { const n = Math.sin(clamp(S.timer / SWING, 0, 1) * Math.PI) * TILE * 0.2; px += dirX * n; py += dirY * n; }
+  let slide = S.mode === "slide" ? clamp(S.timer / SLIDE, 0, 1) : 1; slide = slide * slide * (3 - 2 * slide);
+  let offX = -camX(S.level.rows, px) + (1 - slide) * W, offY = -camY(S.level.rows, py) + HUD;
+  if (S.shake > 0) { offX += Math.sin(clock * 90) * 4; offY += Math.cos(clock * 70) * 3; }
+
+  if (S.mode === "slide" && S.old) { const now = TILE; TILE = S.old.tile; drawMap(S.old.rows, S.old.number, -S.old.camX - slide * W, -S.old.camY + HUD); TILE = now; }
+  drawMap(S.level.rows, S.level.number, offX, offY);
+
+  S.level.monsters.forEach((m, i) => {
+    if (m.hp <= 0) return;
+    let mx = m.x * TILE + offX, my = m.y * TILE + offY;
+    if (S.mode === "counter" && i === S.target) { const n = Math.sin(clamp(S.timer / COUNTER, 0, 1) * Math.PI) * TILE * 0.38; mx -= dirX * n; my -= dirY * n; }
+    if (m.boss) drawBoss(m.name, mx, my, Math.floor(clock * 3 + i), i === S.target ? S.monsterFlash : 0);
+    else drawActor(m.name, mx, my, Math.floor(clock * 3 + i), 0, i === S.target ? S.monsterFlash : 0);
+    if (m.hp < m.maxHp) { ctx.fillStyle = "rgba(20,20,20,.85)"; ctx.fillRect(mx + 3, my - 5, TILE - 6, 4); ctx.fillStyle = "#e64646"; ctx.fillRect(mx + 3, my - 5, (TILE - 6) * m.hp / m.maxHp, 4); }
+  });
+
+  if (S.mode !== "lost" && S.x >= 0) {
+    drawActor("player", px + offX, py + offY, S.mode === "walk" ? S.walkFrame : 0, S.facing, S.playerFlash);
+    if (S.mode === "swing") {
+      const base = [90, 180, 0, 270][S.facing], angle = base - 60 + 120 * clamp(S.timer / SWING, 0, 1), rad = angle * Math.PI / 180, sword = pick("sword" + S.level.number, "sword");
+      if (sword.loaded) drawSprite(sword, px + offX + Math.cos(rad) * TILE * 0.7, py + offY + Math.sin(rad) * TILE * 0.7, 0, 0, angle, false);
+    }
+  }
+  if (S.mode === "shot" && S.shot) {
+    const along = clamp(S.timer / SHOT_PER_TILE, 0, Math.max(1, S.shot.length)), angle = S.shot.stepX > 0 ? 0 : S.shot.stepY > 0 ? 90 : S.shot.stepX < 0 ? 180 : 270;
+    drawProjectile(S.shot.kind, px + offX + S.shot.stepX * along * TILE, py + offY + S.shot.stepY * along * TILE, angle);
+  }
+  for (let i = floats.length - 1; i >= 0; i--) { const f = floats[i]; f.age += dt; if (f.age > 0.9) { floats.splice(i, 1); continue; } text(f.text, f.x + offX + 1, f.y + offY - f.age * 36 + 1, 16, "#000"); text(f.text, f.x + offX, f.y + offY - f.age * 36, 16, f.color); }
+
+  // HUD
+  ctx.fillStyle = "#18141f"; ctx.fillRect(0, 0, W, HUD); ctx.fillRect(0, H - MSG, W, MSG);
+  ctx.fillStyle = "#5a5078"; ctx.fillRect(0, HUD - 2, W, 2); ctx.fillRect(0, H - MSG, W, 2);
+  S.party.forEach((c, i) => {
+    const x = 10 + i * 132; if (x > W - 270) return;
+    text((i === S.leader ? "> " : "  ") + c.name.slice(0, 10), x, 10, 14, c.hp <= 0 ? "#6e6478" : i === S.leader ? "#ffe278" : "#dcdceb");
+    ctx.fillStyle = "#32283c"; ctx.fillRect(x, 34, 120, 12);
+    ctx.fillStyle = c.hp * 3 <= GAME.maxHp ? "#e64646" : "#60c86e"; ctx.fillRect(x, 34, 120 * clamp(c.hp, 0, GAME.maxHp) / GAME.maxHp, 12);
+    text(c.hp + "/" + GAME.maxHp, x + 60, 35, 10, "#fff", "center");
+  });
+  text("LEVEL " + S.level.number, W - 250, 8, 14, "#b4aad2");
+  text("Potions " + countItem("potion") + "  Shields " + countItem("shield") + "  Gold " + countItem("gold"), W - 250, 28, 12, "#f0e2aa");
+  text("Arrows " + countItem("arrow") + "  Stones " + countItem("stone"), W - 250, 45, 12, "#c8d2e6");
+  log.slice(-3).forEach((line, i, shown) => text(line, 12, H - MSG + 8 + i * 17, 13, i === shown.length - 1 ? "#fff" : "#969696"));
+  text("F arrow   T stone   1-4 spells   P potion   TAB leader   M music", 12, H - 14, 10, "#8278a0");
+  // mana, powerups, spell keys, boss bar, talking
+  const mx0 = W - 214, my0 = H - MSG + 8;
+  text("MANA", mx0, my0, 11, "#96c8ff");
+  for (let i = 0; i < GAME.maxMana && i < 12; i++) { ctx.fillStyle = i < S.mana ? "#5aaaff" : "#283250"; ctx.fillRect(mx0 + 44 + i * 13, my0, 10, 12); }
+  text(S.mana + "/" + GAME.maxMana, mx0 + 48 + Math.min(GAME.maxMana, 12) * 13, my0, 11, "#fff");
+  S.powers.slice(0, 3).forEach((p, i) => text("* " + p.name + " " + p.turns, mx0, my0 + 18 + i * 13, 11, "#fad650"));
+  if (S.mode !== "title" && S.mode !== "broken") {
+    let sx = 12;
+    GAME.spells.slice(0, 4).forEach((sp, i) => { const label = (i + 1) + " " + sp.name + " (" + sp.cost + ")"; ctx.font = "bold 11px ui-monospace, Menlo, Consolas, monospace"; const w = ctx.measureText(label).width; ctx.fillStyle = "rgba(12,10,18,.7)"; ctx.fillRect(sx - 3, HUD + 4, w + 6, 16); text(label, sx, HUD + 6, 11, S.mana >= sp.cost ? "#aadcff" : "#5a6078"); sx += w + 14; });
+    if (doorSealed()) {
+      const b = theBoss(), bw = 360, bx = (W - bw) / 2, by = HUD + 30;
+      ctx.fillStyle = "rgba(12,10,18,.82)"; ctx.fillRect(bx - 4, by - 4, bw + 8, 30);
+      ctx.fillStyle = "#32283c"; ctx.fillRect(bx, by + 12, bw, 10);
+      ctx.fillStyle = S.bossPhase === 3 ? "#ff7832" : S.bossPhase === 2 ? "#ecaa3c" : "#d23c46"; ctx.fillRect(bx, by + 12, bw * clamp(b.hp, 0, b.maxHp) / b.maxHp, 10);
+      ctx.fillStyle = "#0a0a0e"; ctx.fillRect(bx + bw / 3, by + 12, 1, 10); ctx.fillRect(bx + bw * 2 / 3, by + 12, 1, 10);
+      text(b.name.toUpperCase() + (S.bossPhase === 3 ? "   ENRAGED" : S.bossPhase === 2 ? "   phase 2" : ""), bx, by - 2, 11, "#ffe278");
+    }
+  }
+  if (S.mode === "talk" && S.talk) drawDialogue(S.level.npc, S.talk.line >= 0 ? S.level.lines[S.talk.line] : { text: "...", a: "", b: "" });
+
+  if (S.mode === "title") { shade(0.66); text("DUNGEON CRAWLER", W / 2, 200, 46, "#ffe278", "center"); text("Find the door on every level. Stay alive.", W / 2, 270, 18, "#dcdceb", "center"); text("Click here, then press ENTER", W / 2, 340, 18, "#fff", "center"); }
+  else if (S.mode === "won") { shade(clamp(S.timer * 1.2, 0, 0.66)); text("YOU WIN!", W / 2, 220, 46, "#ffe278", "center"); text("Gold: " + countItem("gold") + "     Press R to play again", W / 2, 300, 18, "#fff", "center"); }
+  else if (S.mode === "lost") { shade(clamp(S.timer * 1.2, 0, 0.75)); text("GAME OVER", W / 2, 220, 46, "#e65050", "center"); text("Press R to try again", W / 2, 300, 18, "#fff", "center"); }
+  else if (S.mode === "broken") { shade(0.8); text("LEVEL " + S.level.number + " BREAKS A CONTRACT", W / 2, 180, 28, "#e65050", "center"); S.problems.slice(0, 6).forEach((p, i) => text(p, W / 2, 240 + i * 24, 14, "#fff", "center")); }
+}
+
+// ====================================================================== page
+function setStatus(message) { document.getElementById("status").textContent = message; }
+function refreshInfo() {
+  if (!GAME) return;
+  const row = (a, b, yours) => "<tr><td>" + a + "</td><td" + (yours ? " class=yours" : "") + ">" + b + "</td></tr>";
+  document.getElementById("gameInfo").innerHTML = row("Party", GAME.party.map(c => c.name).join(", ")) + row("Levels", GAME.levels.map(l => l.rows[0].length + "×" + l.rows.length).join(", "));
+  spriteCache = {};
+  let html = "";
+  for (const slot of IMAGE_SLOTS) { const s = getSprite(slot); html += row(slot, s.loaded ? s.source + (s.frames > 1 || s.directional ? " (" + s.frames + " frames" + (s.directional ? ", 4 directions" : "") + ")" : "") : "colored block", s.loaded && s.source !== "built-in"); }
+  for (const slot of SOUND_SLOTS) { const f = findFile(slot, [".ogg", ".mp3", ".wav", ".m4a"]); html += row(slot, f ? f.name : "built-in beep", !!f); }
+  const extras = Object.keys(files).filter(n => /^(monster_|monster\d|player\d|sword\d|wall\d|floor\d|door\d|loot\d|music\d)/.test(n));
+  if (extras.length) html += row("special", extras.join(", "), true);
+  document.getElementById("assetInfo").innerHTML = html;
+}
+async function filesFromDrop(e) {
+  const out = [], items = e.dataTransfer.items ? Array.from(e.dataTransfer.items).map(i => i.webkitGetAsEntry ? i.webkitGetAsEntry() : null) : [];
+  if (!items.length || items.some(i => !i)) return Array.from(e.dataTransfer.files);
+  const walk = entry => new Promise(done => {
+    if (entry.isFile) entry.file(f => { out.push(f); done(); }, done);
+    else { const reader = entry.createReader(), all = []; const more = () => reader.readEntries(async batch => { if (!batch.length) { for (const child of all) await walk(child); done(); } else { all.push(...batch); more(); } }, done); more(); }
+  });
+  for (const item of items) await walk(item);
+  return out;
+}
+window.addEventListener("dragover", e => { e.preventDefault(); document.body.classList.add("dragging"); });
+window.addEventListener("dragleave", () => document.body.classList.remove("dragging"));
+window.addEventListener("drop", async e => { e.preventDefault(); document.body.classList.remove("dragging"); addFiles(await filesFromDrop(e)); });
+document.getElementById("pickFiles").addEventListener("change", e => { addFiles(Array.from(e.target.files)); e.target.value = ""; });
+document.getElementById("pickFolder").addEventListener("change", e => { addFiles(Array.from(e.target.files)); e.target.value = ""; });
+document.getElementById("startLevel").addEventListener("change", () => { if (GAME) { newRun(); canvas.focus(); } });
+document.getElementById("reset").addEventListener("click", () => { for (const k of Object.keys(files)) delete files[k]; settings = {}; spriteCache = {}; S = null; startGame(parseGame(BUILTIN_GAME)); setStatus("Playing the built-in template game."); if (audioCtx) playMusic(1, true); });
+
+let last = performance.now();
+function frame(now) { const dt = Math.min(0.05, (now - last) / 1000); last = now; clock += dt; if (S) { update(dt); draw(dt); } requestAnimationFrame(frame); }
+loadBuiltins().then(() => { startGame(parseGame(BUILTIN_GAME)); refreshInfo(); requestAnimationFrame(frame); });
+window.__dungeon = { get state() { return S; }, get game() { return GAME; }, addFiles, step(dt) { update(dt); draw(dt); }, held, pressed, log };
+</script>
+</body>
+</html>

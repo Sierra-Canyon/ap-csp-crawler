@@ -1,0 +1,306 @@
+CHATBOT PROMPTS: get a chatbot to make your own art and music
+===============================================================
+
+HOW THIS WORKS
+    Chatbots are good at TEXT. So you ask for your sprite or song AS TEXT, in the
+    format below, and the Asset Workshop (open asset-library/index.html, click
+    "Workshop") turns that text into a real .png or .wav file with the right name.
+
+        1. Copy a prompt from this page. Change every part in [SQUARE BRACKETS].
+        2. Paste it into the chatbot. Copy the code block it gives back.
+        3. Paste that into the Workshop. Look at the preview and the warnings.
+        4. Not right? Tell the chatbot what to change (see "FIXING IT" at the bottom).
+        5. Happy? Pick what it is for (player, wall, music ...) and press Download.
+           Move the file into your  assets  folder. Done.
+
+    A sprite in this format is just rows of characters, one character per pixel,
+    which is exactly how your level works. You can edit the pixels yourself in any
+    text editor, and you should: it is your sprite.
+
+THE RULES
+    * Describe YOUR OWN idea. Do not ask for characters from games, films, shows or
+      comics, or for "in the style of" a living artist. Invent something.
+    * Follow your teacher's rules about using AI, and say that you used it. A line in
+      your README such as "ghost sprite: made with [chatbot name], edited by me" is enough.
+    * Check the result. The chatbot can miscount. You are the one who signs it off.
+
+
+----------------------------------------------------------------------
+PROMPT 1: ONE SPRITE  (an enemy, a treasure, a weapon, anything that stands still)
+----------------------------------------------------------------------
+--- COPY BELOW ---
+I am making a 16x16 pixel-art sprite for a top-down dungeon game, and I need it as text, not as an image.
+
+Draw: [A ROUND ORANGE PUMPKIN MONSTER WITH A JAGGED GRIN AND A GREEN STEM]
+It will be used as: [AN ENEMY]. It is seen from the front, centered, and should fill most of the 16x16 square.
+
+Use exactly this format:
+
+SPRITE [pumpkin] 16x16
+PALETTE
+. = clear
+a = #1a1a1a
+(one line per color: a single letter or digit, then = then a hex color)
+FRAME 1
+(16 rows, each row EXACTLY 16 characters, using only "." and your palette letters)
+FRAME 2
+(the same sprite with a small change so it looks alive when the two frames alternate, a blink, a bounce, a flicker)
+END
+
+Rules:
+- "." means a see-through pixel. The background must be ".". Do not fill it in.
+- At most 8 colors. Give the shape a dark outline. Put lighter pixels at the top-left and darker at the bottom-right.
+- Every row must be exactly 16 characters and every FRAME must have exactly 16 rows. Count them before you answer.
+- Reply with ONLY the sprite, inside one code block. No explanation.
+
+Here is a correct example of the format (a green slime), so you can see the layout:
+
+SPRITE slime 16x16
+PALETTE
+. = clear
+a = #142814
+b = #a0e66e
+c = #6ebe46
+d = #fafafa
+e = #141414
+f = #3c6e28
+FRAME 1
+................
+................
+................
+................
+................
+.....aaaaaa.....
+....abbbbbba....
+...abbcccccca...
+..acdecccdceca..
+..acccccccccca..
+..acccffffccca..
+..acccccccccca..
+.accccccccccca..
+.acfccfccfccfca.
+..aaaaaaaaaaaa..
+................
+END
+--- COPY ABOVE ---
+
+    Pointing things (swords, wands, spears): add the sentence
+        "It is a weapon lying on its side, pointing to the RIGHT."
+    because the game rotates the picture to face the way you swing. Ask for FRAME 1 only.
+
+    The same prompt makes everything the newer tiles need. Change the two [BRACKETS]:
+        someone to talk to (N)    "It will be used as: A FRIENDLY CHARACTER WHO STANDS STILL."      save as  npc
+        the boss (B)              "It will be used as: THE BOSS. Make it look heavy and dangerous."  save as  boss
+        a powerup (*)             "It will be used as: A GLOWING PICKUP." Two frames: bright, dim.   save as  powerup
+        an arrow, a stone         add the pointing sentence above. FRAME 1 only.                     save as  arrow  or  stone
+        a spell in flight         add the pointing sentence above. Two frames so it flickers.        save as  bolt
+    To give ONE spell its own picture, save it as  spell_  and the spell's name:  spell_zap.png
+    The boss is drawn a quarter bigger than a tile, so keep its feet on the bottom row.
+
+
+----------------------------------------------------------------------
+PROMPT 2: A HERO WHO WALKS  (your player character)
+----------------------------------------------------------------------
+--- COPY BELOW ---
+I am making a 16x16 pixel-art hero for a top-down dungeon game, and I need it as text, not as an image.
+
+The hero: [A YOUNG INVENTOR WITH GOGGLES ON HER FOREHEAD, SHORT BLACK HAIR, A YELLOW COAT AND BROWN BOOTS]
+
+I need six frames. Use exactly these frame names:
+  down1, down2    facing the camera (we see the face)
+  right1, right2  facing right (side view)
+  up1, up2        facing away (we see the back of the head)
+Frame 2 of each pair is the same as frame 1 but with one foot lifted, so alternating them looks like walking.
+I do NOT need left frames, my tool mirrors the right ones.
+
+Use exactly this format:
+
+SPRITE [inventor] 16x16
+PALETTE
+. = clear
+a = #1a1628
+(one line per color: a single letter or digit, then = then a hex color)
+FRAME down1
+(16 rows of exactly 16 characters)
+FRAME down2
+...
+FRAME right1
+...
+FRAME right2
+...
+FRAME up1
+...
+FRAME up2
+...
+END
+
+Rules:
+- "." means a see-through pixel. The background must be ".".
+- At most 8 colors, with a dark outline color. The head is about 8 pixels wide and 7 tall; the body is about 6 rows; the feet are the bottom 3 rows. Keep the hero centered, standing on row 16.
+- Keep the head and body in the SAME place in all six frames, so the hero does not jump around.
+- Every row must be exactly 16 characters and every FRAME must have exactly 16 rows. Count them before you answer.
+- Reply with ONLY the sprite, inside one code block. No explanation.
+--- COPY ABOVE ---
+
+    Easier option: open a hero from the library in the Workshop ("Edit as text"),
+    paste THAT text into the chatbot, and say:
+        "Here is a hero sprite in my text format. Keep the exact format and the same
+         shape, but change it into [A PIRATE WITH A GREEN COAT AND AN EYE PATCH].
+         Only change palette colors and a few pixels. Reply with only the sprite."
+    Changing a sprite that already works goes wrong far less often than starting from nothing.
+
+
+----------------------------------------------------------------------
+PROMPT 3: A LOOK FOR YOUR LEVEL  (wall + floor + door that match)
+----------------------------------------------------------------------
+--- COPY BELOW ---
+I am making 16x16 pixel-art TILES for a top-down dungeon game, and I need them as text, not as images.
+
+My level's theme: [A HAUNTED LIBRARY]
+
+Make three separate sprites that look like they belong together:
+  1. wall, which blocks the player: [TALL BOOKSHELVES]. It fills the whole 16x16 square, no clear pixels.
+  2. floor, which the player walks on: [DARK WOODEN BOARDS]. It fills the whole square, and it must be CALM: low contrast, no big shapes, because it repeats hundreds of times and the hero has to stand out against it.
+  3. door, the way to the next level: [A GLOWING TRAPDOOR]. It may use "." for clear pixels; it is drawn on top of the floor.
+Tiles repeat side by side, so the left edge must sit comfortably next to the right edge, and the top next to the bottom.
+
+Use exactly this format for EACH of the three, one after another, each in its own code block:
+
+SPRITE [wall] 16x16
+PALETTE
+. = clear
+a = #1a1a1a
+(one line per color: a single letter or digit, then = then a hex color)
+FRAME 1
+(16 rows of exactly 16 characters)
+END
+
+Rules:
+- At most 6 colors per tile. Share colors between the three so they match.
+- Every row must be exactly 16 characters and every FRAME must have exactly 16 rows. Count them before you answer.
+- Reply with ONLY the three code blocks. No explanation.
+--- COPY ABOVE ---
+
+    In the Workshop, paste ONE block at a time. Save them for your own level as
+    wall4.png, floor4.png and door4.png (choose "only on level 4").
+
+
+----------------------------------------------------------------------
+PROMPT 4: MUSIC
+----------------------------------------------------------------------
+--- COPY BELOW ---
+Write a short looping chiptune for my dungeon game, as text in the format below (not as audio, not as sheet music).
+
+The mood: [SNEAKING THROUGH A HAUNTED LIBRARY: QUIET, CURIOUS, A LITTLE BIT SPOOKY]
+
+Format:
+
+SONG [haunted library]
+TEMPO [a number: slow is 80-100, medium 110-130, fast 140-170]
+WAVE [square, pulse, triangle or saw, triangle is soft, square and pulse are classic game sounds, saw is harsh]
+LEAD (8 tokens = one bar. Write one LEAD line per bar. Write 8 bars.)
+BASS (8 tokens: ONE note per bar, low, octave 2 or 3, the root of that bar's chord)
+DRUMS [on or off]
+
+Tokens:
+  C4 is middle C. Sharps and flats look like F#4 and Bb3. Octaves 3 to 6 sound best for LEAD.
+  -  is a rest (silence for one step).
+  _  means "keep holding the previous note for one more step".
+  Every token is an eighth note, so 8 tokens make one bar of 4/4.
+
+Rules:
+- Every LEAD line must have exactly 8 tokens. Count them.
+- Pick one key or scale that suits the mood and stay in it. Use rests. A tune needs room to breathe.
+- Make bars 1-4 a phrase and bars 5-8 an answer to it. End bar 8 so that it leads back into bar 1, because the song loops forever.
+- Reply with ONLY the song, inside one code block. No explanation.
+
+Example of the format:
+
+SONG town square
+TEMPO 126
+WAVE pulse
+LEAD C5 - E5 G5 - E5 C5 -
+LEAD D5 - F5 A5 - F5 D5 -
+LEAD E5 - G5 C6 - G5 E5 -
+LEAD D5 C5 B4 C5 D5 - G4 -
+LEAD C5 - E5 G5 - E5 C5 -
+LEAD F5 - A5 C6 - A5 F5 -
+LEAD G5 - F5 E5 - D5 C5 B4
+LEAD C5 _ _ _ - - - -
+BASS C3 D3 E3 G2 C3 F3 G2 C3
+DRUMS on
+--- COPY ABOVE ---
+
+    Save it as  music  to use it everywhere, or  music4  for your own level only.
+
+
+----------------------------------------------------------------------
+PROMPT 5: SOUND EFFECTS
+----------------------------------------------------------------------
+--- COPY BELOW ---
+Write very short sound effects for my dungeon game, as text in the format below. Each one is a quick run of notes.
+
+The feel I want: [CUTE AND BOUNCY, LIKE A TOY]
+
+I need these nine, each in its own code block, with these exact names:
+  hit (my sword lands), hurt (I get hit), defeat (a monster dies), bump (I walk into a wall), loot (I open a chest),
+  potion (I drink a potion), door (I take the stairs down), win (a short fanfare), lose (a short sad ending)
+
+Format for each:
+
+SOUND [hit]
+TEMPO [fast: 360 to 600 for most; 180 to 260 for win and lose]
+WAVE [square, pulse, triangle or saw]
+LEAD [2 to 6 tokens for most sounds; up to 10 for win and lose]
+
+Tokens: notes like C5, F#4, Bb3.  -  is a rest.  _  holds the previous note one step longer.
+Going UP sounds happy or rewarding. Going DOWN sounds like damage, falling or failing. One low note is a thud.
+Reply with ONLY the nine code blocks.
+--- COPY ABOVE ---
+
+    The game has six more sounds. Ask for them the same way, by these exact names:
+        shoot (an arrow or stone leaves), cast (a spell), powerup (I pick up a star), talk (someone speaks),
+        roar (the boss gets angrier: low and slow), quake (the ground shakes: two low notes, back and forth)
+
+
+----------------------------------------------------------------------
+PROMPT 6: IF YOUR CHATBOT CAN MAKE PICTURES
+----------------------------------------------------------------------
+    Picture-making chatbots do not make real 16x16 pixel art. They make a big picture
+    that LOOKS like pixel art. That is fine, the Workshop shrinks it for you
+    ("Picture -> sprite" removes the background and makes it 16, 32 or 64 pixels).
+    You get the best result by asking for something simple and bold:
+
+--- COPY BELOW ---
+Make one image: a single [PUMPKIN MONSTER WITH A JAGGED GRIN], for a retro top-down video game.
+Style: chunky pixel art, as if drawn on a 16 by 16 grid, very few, very large square pixels, a thick dark outline, 6 flat colors, no shading gradients, no anti-aliasing, no text.
+View: [FROM THE FRONT], centered, filling most of the frame, with nothing else in the picture.
+Background: one completely flat, plain [MAGENTA] color that does not appear anywhere in the character.
+Square image.
+--- COPY ABOVE ---
+
+    Then in the Workshop: Picture -> sprite, choose the image, tick "remove background",
+    pick 16 (or 32 if 16 is too blurry), and download. Use "Edit as text" to tidy stray pixels.
+    A walking sheet is hard to get this way, use one still picture for the player instead.
+    The game flips it when you walk left.
+
+
+----------------------------------------------------------------------
+FIXING IT: what to say when the first try is not right
+----------------------------------------------------------------------
+    The Workshop tells you exactly what is wrong. Paste its warning back to the chatbot:
+
+        "Frame 'down2' row 7 is 15 wide but should be 16. Fix that row and send the whole sprite again."
+        "The character '#' is not in the PALETTE. Add it or replace it."
+
+    To change how it looks, be specific about PIXELS and COLORS, not feelings:
+
+        "Make the outline darker: change a to #101018."
+        "The body is too small. Make it 12 pixels wide and 11 tall, centered."
+        "Frame 2 looks the same as frame 1. In frame 2 close the eyes and move the whole body down one row."
+        "The floor is too busy. Use only 3 colors that are very close together."
+        "The tune is too busy. Replace about a third of the notes with  -  rests."
+        "Make bars 5 to 8 go higher than bars 1 to 4, then come back down in bar 8."
+
+    Or just fix it yourself: open the text, change a few characters, paste it back in
+    the Workshop. Moving one pixel is faster by hand than by asking.
