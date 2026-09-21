@@ -1,0 +1,25 @@
+SPRITE scroll 16x16
+PALETTE
+. = clear
+a = #5a4624
+b = #d8c48e
+c = #f4e6c0
+d = #c83c3c
+FRAME 1
+................
+................
+................
+..aaaaaaaaaaaa..
+.abccccccccccba.
+.abaaaaaaaaaaca.
+..accaaaaaacca..
+..acccccccccca..
+..accaaaaaacca..
+..acccccddccca..
+..accaadddccca..
+.abccccccccccba.
+.abccccccccccba.
+..aaaaaaaaaaaa..
+................
+................
+END

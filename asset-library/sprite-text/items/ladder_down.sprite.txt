@@ -1,0 +1,25 @@
+SPRITE ladder_down 16x16
+PALETTE
+. = clear
+a = #50485a
+b = #14101a
+c = #c8965a
+d = #94642e
+FRAME 1
+................
+.aaaaaaaaaaaaaa.
+.abbbbbbbbbbbba.
+.abbcbbbbbbcbba.
+.abbccccccccbba.
+.abbcbbbbbbcbba.
+.abbcbbbbbbcbba.
+.abbddddddddbba.
+.abbdbbbbbbdbba.
+.abbdbbbbbbdbba.
+.abbddddddddbba.
+.abbdbbbbbbdbba.
+.abbbbbbbbbbbba.
+.abbbbbbbbbbbba.
+.aaaaaaaaaaaaaa.
+................
+END

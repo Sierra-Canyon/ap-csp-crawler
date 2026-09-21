@@ -1,0 +1,13 @@
+SONG castle march
+TEMPO 120
+WAVE square
+LEAD F4 - F4 A4 C5 - C5 -
+LEAD Bb4 - A4 G4 F4 - C4 -
+LEAD F4 - F4 A4 C5 - F5 -
+LEAD E5 D5 C5 Bb4 C5 _ - -
+LEAD F5 - F5 E5 D5 - C5 -
+LEAD Bb4 - D5 C5 Bb4 - A4 -
+LEAD G4 - Bb4 A4 G4 F4 E4 G4
+LEAD F4 _ _ _ - - - -
+BASS F2 Bb2 F2 C2 Bb2 Bb2 C3 F2
+DRUMS on

@@ -1,0 +1,25 @@
+SPRITE crate 16x16
+PALETTE
+. = clear
+a = #3c2410
+b = #c8965a
+c = #6e4a24
+d = #a0703c
+FRAME 1
+................
+..aaaaaaaaaaaa..
+..abbbbbbbbbba..
+..abcddddddcba..
+..abdcddddcdba..
+..abddcddcddba..
+..abdddccdddba..
+..abdddccdddba..
+..abddcddcddba..
+..abdcddddcdba..
+..abcddddddcba..
+..abbbbbbbbbba..
+..aaaaaaaaaaaa..
+................
+................
+................
+END

@@ -1,0 +1,13 @@
+SONG deep cave
+TEMPO 92
+WAVE triangle
+LEAD E4 - - - B4 - - -
+LEAD G4 - - F#4 - - E4 -
+LEAD C4 - - - G4 - - -
+LEAD F#4 - - E4 - - B3 -
+LEAD E4 - - - B4 - D5 -
+LEAD E5 - - D5 - - B4 -
+LEAD C5 - - B4 - A4 - F#4
+LEAD E4 _ _ _ - - - -
+BASS E2 E2 C2 B1 E2 E2 A2 E2
+DRUMS off

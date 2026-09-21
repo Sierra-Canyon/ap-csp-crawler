@@ -1,0 +1,7 @@
+<Project>
+  <!-- Turns off the nullable warnings (CS8604 and friends) for every project in this repository,
+       including ones you make later with dotnet new console. -->
+  <PropertyGroup>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+</Project>

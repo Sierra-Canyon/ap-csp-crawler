@@ -1,0 +1,13 @@
+SONG spooky crypt
+TEMPO 84
+WAVE triangle
+LEAD A4 - - Eb5 - - Ab4 -
+LEAD A4 - - Eb5 - - F5 E5
+LEAD F4 - - B4 - - E4 -
+LEAD Eb4 _ _ - D4 _ _ -
+LEAD A4 - C5 Eb5 - C5 A4 -
+LEAD Ab4 - B4 D5 - B4 Ab4 -
+LEAD F4 - Ab4 B4 - Ab4 F4 -
+LEAD E4 _ _ _ - - - -
+BASS A2 A2 F2 E2 A2 Ab2 F2 E2
+DRUMS off

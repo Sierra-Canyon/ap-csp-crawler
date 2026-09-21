@@ -1,0 +1,13 @@
+SONG town square
+TEMPO 126
+WAVE pulse
+LEAD C5 - E5 G5 - E5 C5 -
+LEAD D5 - F5 A5 - F5 D5 -
+LEAD E5 - G5 C6 - G5 E5 -
+LEAD D5 C5 B4 C5 D5 - G4 -
+LEAD C5 - E5 G5 - E5 C5 -
+LEAD F5 - A5 C6 - A5 F5 -
+LEAD G5 - F5 E5 - D5 C5 B4
+LEAD C5 _ _ _ - - - -
+BASS C3 D3 E3 G2 C3 F3 G2 C3
+DRUMS on
