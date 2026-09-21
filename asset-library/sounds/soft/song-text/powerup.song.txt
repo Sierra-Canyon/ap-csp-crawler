@@ -1,0 +1,5 @@
+SONG powerup
+TEMPO 540
+WAVE triangle
+LEAD C4 G4 C5 G5 C6
+DRUMS off

@@ -1,0 +1,5 @@
+SONG win
+TEMPO 220
+WAVE triangle
+LEAD G4 C5 E5 G5 C6 _ _ _
+DRUMS off

@@ -1,0 +1,5 @@
+SONG shoot
+TEMPO 720
+WAVE triangle
+LEAD C6 G5
+DRUMS off

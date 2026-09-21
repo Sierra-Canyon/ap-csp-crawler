@@ -1,0 +1,5 @@
+SONG bump
+TEMPO 600
+WAVE square
+LEAD C3
+DRUMS off

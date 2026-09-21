@@ -1,0 +1,5 @@
+SONG lose
+TEMPO 200
+WAVE square
+LEAD E4 _ Eb4 _ D4 _ A3 _ _ _
+DRUMS off

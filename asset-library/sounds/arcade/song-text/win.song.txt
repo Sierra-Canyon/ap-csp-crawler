@@ -1,0 +1,5 @@
+SONG win
+TEMPO 240
+WAVE square
+LEAD C5 C5 C5 E5 G5 _ C6 _ _ _
+DRUMS off

@@ -1,0 +1,5 @@
+SONG defeat
+TEMPO 420
+WAVE triangle
+LEAD G4 E4 C4 G3
+DRUMS off

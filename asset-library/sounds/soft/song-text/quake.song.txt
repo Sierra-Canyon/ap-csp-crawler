@@ -1,0 +1,5 @@
+SONG quake
+TEMPO 300
+WAVE triangle
+LEAD D2 A1 D2
+DRUMS off

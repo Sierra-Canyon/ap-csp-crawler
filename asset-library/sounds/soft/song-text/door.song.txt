@@ -1,0 +1,5 @@
+SONG door
+TEMPO 360
+WAVE triangle
+LEAD E4 C4 A3 E3
+DRUMS off

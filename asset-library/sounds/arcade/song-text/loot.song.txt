@@ -1,0 +1,5 @@
+SONG loot
+TEMPO 480
+WAVE pulse
+LEAD C5 E5 G5 C6 E6
+DRUMS off

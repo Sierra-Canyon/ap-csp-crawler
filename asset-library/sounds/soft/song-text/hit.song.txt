@@ -1,0 +1,5 @@
+SONG hit
+TEMPO 600
+WAVE triangle
+LEAD E5 C5
+DRUMS off

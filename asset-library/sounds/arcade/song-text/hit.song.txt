@@ -1,0 +1,5 @@
+SONG hit
+TEMPO 600
+WAVE square
+LEAD C6 G5 C5
+DRUMS off

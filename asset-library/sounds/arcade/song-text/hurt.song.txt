@@ -1,0 +1,5 @@
+SONG hurt
+TEMPO 480
+WAVE square
+LEAD E4 Eb4 D4 C#4
+DRUMS off

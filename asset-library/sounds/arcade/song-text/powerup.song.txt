@@ -1,0 +1,5 @@
+SONG powerup
+TEMPO 600
+WAVE pulse
+LEAD C4 E4 G4 C5 E5 G5 C6
+DRUMS off

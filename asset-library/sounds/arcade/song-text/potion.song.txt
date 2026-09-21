@@ -1,0 +1,5 @@
+SONG potion
+TEMPO 480
+WAVE pulse
+LEAD G4 B4 D5 G5
+DRUMS off

@@ -1,0 +1,5 @@
+SONG potion
+TEMPO 420
+WAVE triangle
+LEAD C4 E4 G4 C5
+DRUMS off

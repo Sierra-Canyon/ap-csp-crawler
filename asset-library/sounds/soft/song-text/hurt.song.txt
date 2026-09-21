@@ -1,0 +1,5 @@
+SONG hurt
+TEMPO 420
+WAVE triangle
+LEAD C4 A3 G3
+DRUMS off

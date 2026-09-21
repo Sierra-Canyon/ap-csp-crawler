@@ -1,0 +1,5 @@
+SONG talk
+TEMPO 600
+WAVE triangle
+LEAD C5 E5
+DRUMS off

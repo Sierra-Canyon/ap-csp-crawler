@@ -1,0 +1,5 @@
+SONG quake
+TEMPO 300
+WAVE square
+LEAD C2 G1 C2 G1
+DRUMS off

@@ -1,0 +1,5 @@
+SONG loot
+TEMPO 420
+WAVE triangle
+LEAD C5 G5 C6
+DRUMS off

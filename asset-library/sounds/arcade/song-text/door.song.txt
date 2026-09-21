@@ -1,0 +1,5 @@
+SONG door
+TEMPO 420
+WAVE square
+LEAD G4 E4 C4 G3 E3 C3
+DRUMS off

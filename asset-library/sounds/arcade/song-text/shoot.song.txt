@@ -1,0 +1,5 @@
+SONG shoot
+TEMPO 720
+WAVE square
+LEAD E6 A5
+DRUMS off

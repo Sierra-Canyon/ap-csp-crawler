@@ -1,0 +1,5 @@
+SONG bump
+TEMPO 600
+WAVE triangle
+LEAD G2
+DRUMS off

@@ -1,0 +1,5 @@
+SONG lose
+TEMPO 180
+WAVE triangle
+LEAD C4 _ Bb3 _ A3 _ F3 _ _ _
+DRUMS off
