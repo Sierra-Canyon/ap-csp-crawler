@@ -80,8 +80,6 @@ base **`main`** ← compare **`crawler`** → **Create pull request**. Fill in t
 right-hand sidebar click the gear beside **Reviewers** and choose `jd12`. **Do not merge it.**
 It stays open until 12/1, and every push you make from now on appears in it.
 
-Ignore the `feedback` pull request that is already there. That one is not yours.
-
 ### Spec self-check, to copy into the pull request
 
 ```
