@@ -1,0 +1,28 @@
+# ======================================================================
+#  assets.txt: tells the graphics engines which picture or sound to use.
+#  Lines starting with # are notes. YOU DO NOT NEED THIS FILE for the
+#  simple case: see "THE EASY WAY" in ASSETS-GUIDE.txt.
+#
+#  One line per thing:
+#      name = file  [size N] [col C] [row R] [frames F] [directions 4] [gap G] [margin M]
+#
+#  Examples (remove the # at the front to switch one on):
+#
+#  Use one 16x16 square out of a big tileset, 3 across and 1 down:
+# wall    = tileset.png  size 16  col 3  row 1
+# floor   = tileset.png  size 16  col 0  row 0
+#
+#  Some tilesets leave a 1-pixel gap between squares. Say so with gap:
+# wall    = tilemap.png  size 16  gap 1  col 3  row 1
+#
+#  A hero sheet with 4 walking frames in each of 4 rows (down, left, right, up):
+# player  = hero.png  size 32  frames 4  directions 4
+#
+#  Different walls on level 2, and a special picture for ogres:
+# wall2         = ice_wall.png
+# monster_ogre  = big_ogre.png
+#
+#  Your own music, and different music on level 3:
+# music   = my_song.ogg
+# music3  = boss_theme.mp3
+# ======================================================================

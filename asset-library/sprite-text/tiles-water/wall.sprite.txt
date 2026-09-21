@@ -1,0 +1,76 @@
+SPRITE wall 16x16
+PALETTE
+. = clear
+a = #2c6ebc
+b = #1e5ca8
+c = #78bef0
+d = #3882ce
+FRAME 1
+abbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbb
+cccbbbbbcccbbbbb
+bddddbbbbddddbbb
+bbbbbbbbbbbbbbbb
+bbbbbbbbbbbabbbb
+bbbbabbbbbbbbbbb
+bbbbbcccbbbbbccc
+ddbbbbddddbbbadd
+bbbbbbabbbbbbbbb
+bbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbba
+bbcccbbbabcccbbb
+babddddbbbbddddb
+bbbbbbbbbbbbbbbb
+bbbbbbbbbbabbbbb
+FRAME 2
+bbbbbbbbbbbbbabb
+bbbbbbabbbbbbbbb
+cbbbbbcccbbbbbcc
+dddbbbbddddbbbbd
+bbbbbbbbabbbbbbb
+babbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbb
+bbbcccbbbbacccbb
+bbbaddddbbbbdddd
+bbbbbbbbbbbbbbbb
+bbbbbbbbbbbbabbb
+bbbbbabbbbbbbbbb
+cccbbbbbcccbbbbb
+bddddbbbbddddbab
+bbbbbbbabbbbbbbb
+abbbbbbbbbbbbbbb
+FRAME 3
+bbbabbbbbbbbbbbb
+bbbbbbbbbbbbbbbb
+bbbbcccbbbbbcccb
+dbbbbddddbbbbddd
+bbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbab
+bbbbbbbabbbbbbbb
+acccbbbbbcccbbbb
+bbddddbbbbddddbb
+bbbbbbbbbabbbbbb
+bbabbbbbbbbbbbbb
+bbbbbbbbbbbbbbbb
+cbbbbbcccbbabbcc
+dddbabbddddbbbbd
+bbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbabb
+FRAME 4
+bbbbbbbbbbbbbbbb
+bbbbbbbbbabbbbbb
+bbcccbbbbbcccbbb
+bbbddddbbbbddddb
+bbbbbbbbbbbabbbb
+bbbbabbbbbbbbbbb
+bbbbbbbbbbbbbbbb
+ccbbbbbcccbbbabc
+ddddbbabddddbbbb
+bbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbba
+bbbbbbbbabbbbbbb
+babbcccbbbbbcccb
+dbbbbddddbbbbddd
+bbbbbbbbbbabbbbb
+bbbabbbbbbbbbbbb
+END

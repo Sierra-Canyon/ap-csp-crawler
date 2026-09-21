@@ -1,0 +1,46 @@
+SPRITE sage_gold 16x16
+PALETTE
+. = clear
+a = #1e162c
+b = #f6c854
+c = #ccb068
+d = #a08646
+e = #78622c
+f = #f4dfaa
+g = #1e1e32
+h = #f0f0fa
+FRAME 1
+................
+.....aaaaa...b..
+....accccca.bbb.
+...accdddcca.e..
+...acfffffdae...
+...adfgfgfda.e..
+...adfffffda.e..
+....adhhhda..e..
+...aadddddaa.e..
+..acdddddddcae..
+..acdddddddcae..
+..acdddddddca...
+..accdddddcca...
+..accccccccca...
+..aaaaaaaaaaa...
+................
+FRAME 2
+................
+................
+.....aaaaa...b..
+....accccca.bbb.
+...accdddcca.e..
+...acfffffdae...
+...adfgfgfda.e..
+...adfffffda.e..
+....adhhhda..e..
+...aadddddaa.e..
+..acdddddddcae..
+..acdddddddcae..
+..acdddddddca...
+..accdddddcca...
+..accccccccca...
+..aaaaaaaaaaa...
+END

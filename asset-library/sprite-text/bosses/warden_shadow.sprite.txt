@@ -1,0 +1,47 @@
+SPRITE warden_shadow 16x16
+PALETTE
+. = clear
+a = #140c18
+b = #e2d8be
+c = #8a39b0
+d = #ca5aff
+e = #5c2278
+f = #f0f0e6
+g = #6e6e82
+h = #464654
+i = #c03cff
+FRAME 1
+ab............ba
+abb..........bba
+.abba.aaaa.abba.
+..abaaccccaabba.
+...acccccccca...
+..accddccddcca..
+..accdaccadcca..
+..acccccccccca..
+..acefafffafeca.
+.aaceeffffeecaa.
+aggaeeeeeeeeagga
+aghgaggggggaghga
+aghgaghhhhhaghga
+.aaaaggggggaaaa.
+....aggaagga....
+....aaa..aaa....
+FRAME 2
+ab............ba
+abb..........bba
+.abba.aaaa.abba.
+..abaaccccaabba.
+...acccccccca...
+..acciicciicca..
+..acciaccaicca..
+..acccccccccca..
+..acefafffafeca.
+.aaceeffffeecaa.
+aggaeeeeeeeeagga
+aghgaggggggaghga
+aghgaghhhhhaghga
+.aaaaggggggaaaa.
+....aggaagga....
+....aaa..aaa....
+END

@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The self-check. It compiles the SAME files as ../dungeon (everything except Program.cs)
+       and calls each function with known inputs.   Run it from this folder:   dotnet run -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <AssemblyName>dungeon-tests</AssemblyName>
+    <NoWarn>$(NoWarn);CS8321</NoWarn>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <StitchPiece Include="Tests.cs" />
+    <StitchPiece Include="../dungeon/*.cs" Exclude="../dungeon/Program.cs" />
+    <None Include="Tests.cs" />
+  </ItemGroup>
+
+  <Import Project="../dungeon/Stitch.targets" />
+
+</Project>

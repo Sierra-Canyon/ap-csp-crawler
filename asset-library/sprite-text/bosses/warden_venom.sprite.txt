@@ -1,0 +1,47 @@
+SPRITE warden_venom 16x16
+PALETTE
+. = clear
+a = #140c18
+b = #e2d8be
+c = #51b039
+d = #7bff5a
+e = #337822
+f = #f0f0e6
+g = #6e6e82
+h = #464654
+i = #63ff3c
+FRAME 1
+ab............ba
+abb..........bba
+.abba.aaaa.abba.
+..abaaccccaabba.
+...acccccccca...
+..accddccddcca..
+..accdaccadcca..
+..acccccccccca..
+..acefafffafeca.
+.aaceeffffeecaa.
+aggaeeeeeeeeagga
+aghgaggggggaghga
+aghgaghhhhhaghga
+.aaaaggggggaaaa.
+....aggaagga....
+....aaa..aaa....
+FRAME 2
+ab............ba
+abb..........bba
+.abba.aaaa.abba.
+..abaaccccaabba.
+...acccccccca...
+..acciicciicca..
+..acciaccaicca..
+..acccccccccca..
+..acefafffafeca.
+.aaceeffffeecaa.
+aggaeeeeeeeeagga
+aghgaggggggaghga
+aghgaghhhhhaghga
+.aaaaggggggaaaa.
+....aggaagga....
+....aaa..aaa....
+END
