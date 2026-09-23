@@ -18,7 +18,7 @@ Your partner sends you **one file**: their `dungeon/MyLevel.cs`. AirDrop it. Sav
 ## 2. The contract check (5 minutes)
 
 ```
-cd dungeon-tests
+cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-tests
 dotnet run MyLevel
 ```
 
@@ -28,7 +28,7 @@ what you report.
 ## 3. Play it (15 minutes)
 
 ```
-cd ../dungeon-graphics
+cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-graphics
 dotnet run -- 4
 ```
 

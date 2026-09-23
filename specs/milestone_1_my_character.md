@@ -50,13 +50,13 @@ call it. Pass the three lists straight through, in the same order.
 ## 3. Check it
 
 ```
-cd dungeon-tests
+cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-tests
 dotnet run IsFair
 dotnet run
 ```
 
 The last line must say **`0 failed`**, and no line that starts `TO DO Milestone 1` may be left.
-(The `Milestone 3` lines stay until December. That is expected.) Then play it: `cd ../dungeon`, `dotnet run`,
+(The `Milestone 3` lines stay until December. That is expected.) Then play it: `cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon`, `dotnet run`,
 and find your name in the party list.
 
 ## 4. Commit, push, open the pull request
