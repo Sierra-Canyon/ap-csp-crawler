@@ -20,8 +20,7 @@ never iCloud Drive or Google Drive.
 ```
 cd ~/version_control
 git clone <your repo url>
-cd apcsp-2026-2027-crawler-<your-username>
-cd dungeon
+cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon
 dotnet run
 ```
 
@@ -54,11 +53,16 @@ git push -u origin crawler
 
 ## The three commands you will use every day
 
+Every `cd` below starts from your home folder, so they work no matter which folder the terminal is in.
+
 ```
-cd dungeon          &&  dotnet run            play the text game
-cd dungeon-tests    &&  dotnet run            check every function
-cd dungeon-tests    &&  dotnet run Damage     check only the functions with Damage in the name
-cd dungeon-tests    &&  dotnet run Quest03    check only the rows for Quest 3 and its challenge
+cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon
+dotnet run                play the text game
+
+cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-tests
+dotnet run                check every function
+dotnet run Damage         check only the functions with Damage in the name
+dotnet run Quest03        check only the rows for Quest 3 and its challenge
 ```
 
 Inside the game, type `quests` to see what your quest functions do with the real party, inventory, and level.
