@@ -8,7 +8,7 @@
 
 ## It runs
 
-<!-- Paste the LAST line of the self-check:  cd dungeon-tests  then  dotnet run -->
+<!-- Paste the LAST line of the self-check:  cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-tests  then  dotnet run -->
 
 ```
 ```
