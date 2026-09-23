@@ -1,7 +1,8 @@
 // ======================================================================
 //  Quest 0: Party Mood.   Day 0, Tue 9/22
 //  The sheet for this day has the rules and the rows it is graded on.
-//  Check it:   cd ../dungeon-tests   then   dotnet run Quest00
+//  Check it:   cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-tests
+//              then   dotnet run Quest00
 //
 //  QUEST NOT STARTED      <- delete this whole line when you begin the quest
 // ======================================================================

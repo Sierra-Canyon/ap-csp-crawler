@@ -1,7 +1,8 @@
 // ======================================================================
 //  Quest 12: Every Name.   For 2, Thu 10/29
 //  The sheet for this day has the rules and the rows it is graded on.
-//  Check it:   cd ../dungeon-tests   then   dotnet run Quest12
+//  Check it:   cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-tests
+//              then   dotnet run Quest12
 //
 //  QUEST NOT STARTED      <- delete this whole line when you begin the quest
 // ======================================================================

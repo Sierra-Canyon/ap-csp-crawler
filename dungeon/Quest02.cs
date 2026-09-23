@@ -1,7 +1,8 @@
 // ======================================================================
 //  Quest 2: Health Warning.   Functions 2, Thu 9/24
 //  The sheet for this day has the rules and the rows it is graded on.
-//  Check it:   cd ../dungeon-tests   then   dotnet run Quest02
+//  Check it:   cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-tests
+//              then   dotnet run Quest02
 //
 //  QUEST NOT STARTED      <- delete this whole line when you begin the quest
 // ======================================================================
