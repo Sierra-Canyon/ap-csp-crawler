@@ -326,12 +326,13 @@ string lastQuestHeader = "";
 bool questHung = false;
 // One row gets three seconds. A loop that never ends is reported, and the rows after it are not run,
 // because the loop is still spinning in the background until this program ends.
+// Under the VS Code debugger there is no limit, so a breakpoint inside a quest can be held as long as you like.
 string Timed(Func<string> run)
 {
     string result = "";
     System.Threading.Thread t = new System.Threading.Thread(() => { result = Try(run); });
     t.IsBackground = true; t.Start();
-    if (t.Join(3000)) return result;
+    if (t.Join(System.Diagnostics.Debugger.IsAttached ? -1 : 3000)) return result;
     questHung = true; Console.SetOut(TextWriter.Null);
     return "no answer after 3 seconds (a loop that never ends?)";
 }
