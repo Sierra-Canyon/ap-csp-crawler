@@ -26,12 +26,23 @@ dotnet run
 
 Type `d` and press Enter. If the `@` moved, your machine is ready. Type `quit` to stop.
 
-Then start your branch. You do this once, and every quest and milestone goes on it.
+Then start your branch. Every unit of the semester gets a branch, and the unit ends with a pull request that merges it into `main`. The first branch is `crawler`, for the functions unit:
 
 ```
 git switch -c crawler
 git push -u origin crawler
 ```
+
+| Branch | What goes on it | Pull request into `main` |
+|---|---|---|
+| `crawler` | Days 0 to 7, the functions quests | Mon 10/5, end of Day 7 |
+| `milestone-1` | `IsFairCharacter` and `MyCharacter` | Mon 10/12, when it is due |
+| `lists` | Days 8 to 10 | Mon 10/26, end of Day 10 |
+| `loops` | Days 11 to 16 | Mon 11/9, end of Day 16 |
+| `milestone-2` | the eight rewrites | Wed 11/18, 5:00 AM |
+| `milestone-3` | your level, the playtest, the demo | Tue 12/1, demo day |
+
+`main` is never edited directly: it receives your pull requests and the template's updates. The pull request steps are on the sheet of each unit's last day and on the one-page sheet "Branches and pull requests".
 
 ## Where things are
 
@@ -97,7 +108,7 @@ git checkout main
 git fetch template
 git merge template/main
 git push
-git checkout crawler
+git checkout <the branch you are on>
 git merge main
 git push
 ```
