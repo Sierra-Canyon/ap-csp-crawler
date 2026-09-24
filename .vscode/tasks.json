@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build the game",
+            "type": "shell",
+            "command": "dotnet build dungeon/Dungeon.csproj",
+            "problemMatcher": "$msCompile",
+            "presentation": { "reveal": "silent" }
+        },
+        {
+            "label": "build the self-check",
+            "type": "shell",
+            "command": "dotnet build dungeon-tests/Tests.csproj",
+            "problemMatcher": "$msCompile",
+            "presentation": { "reveal": "silent" }
+        }
+    ]
+}

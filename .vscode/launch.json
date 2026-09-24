@@ -1,0 +1,36 @@
+{
+    // Press F5, or open Run and Debug (the play button with a bug on the left) and pick one of these.
+    // Breakpoints go in your own files: click left of a line number so a red dot appears.
+    "version": "0.2.0",
+    "inputs": [
+        {
+            "id": "quest",
+            "type": "promptString",
+            "description": "Which rows? For example Quest03, or Damage, or nothing for all of them",
+            "default": "Quest00"
+        }
+    ],
+    "configurations": [
+        {
+            "name": "Play the game",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build the game",
+            "program": "${workspaceFolder}/dungeon/bin/Debug/net10.0/dungeon.dll",
+            "cwd": "${workspaceFolder}/dungeon",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Check one quest",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build the self-check",
+            "program": "${workspaceFolder}/dungeon-tests/bin/Debug/net10.0/dungeon-tests.dll",
+            "args": ["${input:quest}"],
+            "cwd": "${workspaceFolder}/dungeon-tests",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        }
+    ]
+}
