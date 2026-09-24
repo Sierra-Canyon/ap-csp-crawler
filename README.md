@@ -76,6 +76,31 @@ Read the first one. A line that says **TO DO** names a quest or a milestone you 
 The rows for a quest are not run until you delete the `QUEST NOT STARTED` line at the top of its file.
 A line that says **EXTRA** is optional and is never graded.
 
+## Updating from the template
+
+When the template gets a fix, it does not reach your repository by itself. The one-page sheet "Updating from the template" has the commands; here they are again. Every command runs in a terminal inside your repository folder.
+
+Once, the first time only (with nothing uncommitted):
+
+```
+git remote add template https://github.com/Sierra-Canyon/ap-csp-crawler.git
+git fetch template --tags
+git checkout main
+git merge -s ours --allow-unrelated-histories -m "Link template history" baseline
+git push
+```
+
+Every time there is an update (with nothing uncommitted):
+
+```
+git checkout main
+git pull --no-rebase template main
+git push
+git checkout crawler
+git merge main
+git push
+```
+
 ## The four contracts
 
 Every level, character and conversation in the class follows these.
