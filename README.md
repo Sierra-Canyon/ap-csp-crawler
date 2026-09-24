@@ -94,7 +94,8 @@ Every time there is an update (with nothing uncommitted):
 
 ```
 git checkout main
-git pull --no-rebase template main
+git fetch template
+git merge template/main
 git push
 git checkout crawler
 git merge main
