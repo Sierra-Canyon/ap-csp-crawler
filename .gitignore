@@ -1,6 +1,8 @@
 bin/
 obj/
 .vs/
-.vscode/
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
 .DS_Store
 mygame.txt
