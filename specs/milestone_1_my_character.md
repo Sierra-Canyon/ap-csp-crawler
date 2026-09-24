@@ -6,16 +6,14 @@ Two functions in one file, `dungeon/MyCharacter.cs`.
 
 ## 0. Check your branch
 
-You started the `crawler` branch on Day 0, and your quests are on it. Milestone 1 goes on the same branch.
+The functions unit is on `crawler`, merged into `main` by your pull request on Day 7. Milestone 1 goes on its own branch, `milestone-1`, which that pull request's sheet had you create.
 
 ```
 cd ~/version_control/apcsp-2026-2027-crawler-<your-username>
 git status
 ```
 
-`git status` should say **`On branch crawler`**. If it says `main`, stop and
-`git switch crawler` first, or the work lands somewhere I do not read. Then `git push`, so that
-the branch on GitHub has everything you have done so far.
+`git status` should say **`On branch milestone-1`**. If it says `main`, stop: `git switch -c milestone-1` and `git push -u origin milestone-1` first, or the work lands somewhere I do not read. When the milestone is done, merge it into `main` with a pull request, the same way as the unit.
 
 ## 1. Write `IsFairCharacter`
 
