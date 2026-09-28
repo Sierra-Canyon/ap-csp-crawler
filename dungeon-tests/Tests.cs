@@ -321,7 +321,7 @@ if (Directory.Exists(dungeonFolder))
 // Built by tools/make_quests.py. Change the record in tools/quests/, not this file.
 // ---------------------------------------------------------------- the daily quests
 // A quest row is not counted in the last line of this report. Quests have their own line above it.
-int questRows = 0, questPass = 0, challengeRows = 0, challengePass = 0;
+int questRows = 0, questPass = 0, questFail = 0, challengeRows = 0, challengePass = 0;
 string lastQuestHeader = "";
 bool questHung = false;
 // One row gets three seconds. A loop that never ends is reported, and the rows after it are not run,
@@ -377,7 +377,7 @@ void QuestRow(bool graded, string quest, string header, string file, string mark
     else if (!started) screen.WriteLine((graded ? "TO DO " : "EXTRA ") + call + "  should be  " + expected);
     else if (!ran) screen.WriteLine((graded ? "TO DO " : "EXTRA ") + call + "  should be  " + expected + "  (not run: an earlier row never finished)");
     else if (waiting) screen.WriteLine((graded ? "TO DO " : "EXTRA ") + call + "  should be  " + expected + "  (counts once this passes:  " + needsCall + ")");
-    else screen.WriteLine((graded ? "TO DO " : "EXTRA ") + call + "  should be  " + expected + "  (yours gives  " + actual + ")");
+    else { if (graded) questFail++; screen.WriteLine((graded ? "FAIL  " : "EXTRA ") + call + "  should be  " + expected + "  (yours gives  " + actual + ")"); }
 }
 List<string> Shelf(int n) { List<string> all = new List<string> { "rusty key", "bat wing", "ogre tooth", "silver cup", "old map" }; return all.GetRange(0, n); }
 string ShelfAfterAdd(int n, string trophy) { List<string> s = Shelf(n); AddTrophy(s, trophy); return ShowS(s); }
@@ -592,11 +592,16 @@ if (questRows + challengeRows > 0)
 {
     screen.WriteLine();
     screen.WriteLine("Quests: " + questPass + " of " + questRows + " rows pass.   Challenges (extra): " + challengePass + " of " + challengeRows + ".");
+    if (questFail > 0) screen.WriteLine("Read the first FAIL line. It shows the call, the right answer, and what your function gave, character for character.");
 }
 // </quests>
 
-screen.WriteLine();
-if (extras > 0) screen.WriteLine(extras + " optional extras are open: a spell, a conversation, and an N, a * and a B on your level. They are not graded.");
-screen.WriteLine(passed + " passed, " + failed + " failed, " + todo + " still to do.");
-if (failed > 0 && only == "") screen.WriteLine("Read the first FAIL line. It shows the call, the right answer, and what your function gave.");
+// The milestone summary. A run filtered to a quest (dotnet run Quest03) matched no milestone row, so it says nothing here.
+if (passed + failed + todo > 0 || questRows + challengeRows == 0)
+{
+    screen.WriteLine();
+    if (extras > 0) screen.WriteLine(extras + " optional extras are open: a spell, a conversation, and an N, a * and a B on your level. They are not graded.");
+    screen.WriteLine(passed + " passed, " + failed + " failed, " + todo + " still to do.");
+    if (failed > 0 && only == "") screen.WriteLine("Read the first FAIL line. It shows the call, the right answer, and what your function gave.");
+}
 return failed;
