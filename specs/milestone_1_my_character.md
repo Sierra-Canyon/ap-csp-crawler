@@ -74,9 +74,18 @@ feat: Add my character
 ```
 
 Then `git push`. On **github.com**, in this repository: **Pull requests** → **New pull request** →
-base **`main`** ← compare **`crawler`** → **Create pull request**. Fill in the template. In the
-right-hand sidebar click the gear beside **Reviewers** and choose `jd12`. **Do not merge it.**
-It stays open until 12/2, and every push you make from now on appears in it.
+base **`main`** ← compare **`milestone-1`** → **Create pull request**. Fill in the template. In the
+right-hand sidebar click the gear beside **Reviewers** and choose `jd12`. **Leave it open today.**
+Every push you make until Thursday appears in it. On Thursday, when the milestone is due and the
+self-check below is ticked, **Merge pull request** and **Confirm merge**, the way you merged
+`crawler` on Day 7. Then, in the terminal, start the branch for the lists unit:
+
+```
+git checkout main
+git pull
+git switch -c lists
+git push -u origin lists
+```
 
 ### Spec self-check, to copy into the pull request
 
