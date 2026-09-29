@@ -1,6 +1,6 @@
 # Milestone 1: your character
 
-**Built Friday 10/9 · due Monday 10/12, end of class · 20 points**
+**Built Monday 10/12 · due Thursday 10/15, end of class · 20 points**
 
 Two functions in one file, `dungeon/MyCharacter.cs`.
 
@@ -76,7 +76,7 @@ feat: Add my character
 Then `git push`. On **github.com**, in this repository: **Pull requests** → **New pull request** →
 base **`main`** ← compare **`crawler`** → **Create pull request**. Fill in the template. In the
 right-hand sidebar click the gear beside **Reviewers** and choose `jd12`. **Do not merge it.**
-It stays open until 12/1, and every push you make from now on appears in it.
+It stays open until 12/2, and every push you make from now on appears in it.
 
 ### Spec self-check, to copy into the pull request
 

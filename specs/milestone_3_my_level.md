@@ -1,6 +1,6 @@
 # Milestone 3: your level
 
-**Built Fri 11/20 and Mon 11/23 · playtest Tue 11/24 · due Tuesday 12/1, start of class · 80 points**
+**Built Mon 11/23 and Tue 11/24 · playtest Tue 12/1 · due Wednesday 12/2, start of class · 80 points**
 
 The game's last level is whatever `MyLevel()` returns. You design it, and you add two functions
 of your own.
@@ -82,11 +82,11 @@ One commit for the level, one for each new function, then push. Messages:
 - [ ] Two new functions, each with a parameter, each called from somewhere. Their names:
 - [ ] levelNumber in Program.cs is back to 1
 - [ ] CREDITS.md is filled in
-- [ ] playtest/PLAYTEST.md is filled in (after Tuesday 11/24)
+- [ ] playtest/PLAYTEST.md is filled in (after Tuesday 12/1)
 ```
 
 ## The three questions for the log
 
-**Fri 11/20.** 1. What choice does your level give the player, and which tiles create it? 2. What will most people get wrong when they type a level as strings, and how does the self-check catch it? 3. What is the signature of your first new function, and what is each parameter for?
+**Mon 11/23.** 1. What choice does your level give the player, and which tiles create it? 2. What will most people get wrong when they type a level as strings, and how does the self-check catch it? 3. What is the signature of your first new function, and what is each parameter for?
 
-**Mon 11/23.** 1. Which of your two new functions is called from more than one place, or could be? 2. What did you change after playing your own level, and what made you change it? 3. If a classmate pasted your `MyLevel.cs` into their game right now, what is the one thing that could still go wrong?
+**Tue 11/24.** 1. Which of your two new functions is called from more than one place, or could be? 2. What did you change after playing your own level, and what made you change it? 3. If a classmate pasted your `MyLevel.cs` into their game right now, what is the one thing that could still go wrong?

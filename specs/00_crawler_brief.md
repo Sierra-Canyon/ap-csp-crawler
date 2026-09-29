@@ -1,8 +1,8 @@
 # Dungeon Crawler: the project brief
 
-**AP Computer Science Principles · Period D · handed out Thursday 10/8**
+**AP Computer Science Principles · Period D · handed out Friday 10/9**
 
-Between now and **Tuesday 12/1** you add your character, rewrite eight of the game's
+Between now and **Wednesday 12/2** you add your character, rewrite eight of the game's
 functions, and design a level that works in anyone's game.
 
 ## The rule
@@ -15,13 +15,13 @@ No `class`, no arrays, no `foreach`, no `switch`, no `var`, no `while` (the game
 
 | | What | Built in class | Due | Points |
 |---|---|---|---|---|
-| **Milestone 1** | **Your character.** `IsFairCharacter` and `MyCharacter`. Branch and pull request opened. | Fri 10/9 | **Mon 10/12, end of class** | 20 |
-| **Milestone 2** | **Eight rewrites.** Two functions a day for four days, each one deleted and written again by you. | Tue 11/10, Thu 11/12, Mon 11/16, Tue 11/17 | **Wed 11/18, 5:00 AM** | 40 |
-| **Milestone 3** | **Your level.** `MyLevel`, two new functions of your own design, credits. | Fri 11/20, Mon 11/23 | **Tue 12/1, start of class** | 80 |
-| **Playtest** | You play someone else's level in your game and write the report. | Tue 11/24 | **Tue 11/24, end of class** | 20 |
-| **Demo day** | Two minutes: your level on the projector, and one function you are proud of. | Tue 12/1 | | part of Milestone 3 |
+| **Milestone 1** | **Your character.** `IsFairCharacter` and `MyCharacter`. Branch and pull request opened. | Mon 10/12 | **Thu 10/15, end of class** | 20 |
+| **Milestone 2** | **Eight rewrites.** Two functions a day for four days, each one deleted and written again by you. | Thu 11/12, Mon 11/16, Tue 11/17, Wed 11/18 | **Fri 11/20, 5:00 AM** | 40 |
+| **Milestone 3** | **Your level.** `MyLevel`, two new functions of your own design, credits. | Mon 11/23, Tue 11/24 | **Wed 12/2, start of class** | 80 |
+| **Playtest** | You play someone else's level in your game and write the report. | Tue 12/1 | **Tue 12/1, end of class** | 20 |
+| **Demo day** | Two minutes: your level on the projector, and one function you are proud of. | Wed 12/2 | | part of Milestone 3 |
 
-Each milestone has its own sheet in `specs/`. Milestone 2 needs `for` loops, which start on 10/28.
+Each milestone has its own sheet in `specs/`. Milestone 2 needs `for` loops, which start on 10/29.
 
 ## How it is graded
 

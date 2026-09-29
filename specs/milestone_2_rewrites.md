@@ -1,6 +1,6 @@
 # Milestone 2: eight rewrites
 
-**Built Tue 11/10, Thu 11/12, Mon 11/16, Tue 11/17 · due Wednesday 11/18, 5:00 AM · 40 points**
+**Built Thu 11/12, Mon 11/16, Tue 11/17, Wed 11/18 · due Friday 11/20, 5:00 AM · 40 points**
 
 Each day you choose **two** functions from that day's menu, delete what is inside them, and
 write them again yourself. Eight by Friday. The game must still work after each one.
@@ -9,10 +9,10 @@ write them again yourself. Eight by Friday. The game must still work after each 
 
 | Day | File | Choose two |
 |---|---|---|
-| **Tue 11/10** Crawler 2 | `Levels.cs` | `TileAt` · `IsWall` · `CountTiles` · `FindTileX` · `FindTileY` |
-| **Thu 11/12** Crawler 3 | `Characters.cs`, `Combat.cs` | `FindCharacter` · `TotalHealth` · `StrongestIndex` · `AnyAlive` · `NextAliveIndex` · `MonsterAt` · or `FindSpell` (`Magic.cs`) · `HasFlag` · `AllDefeated` (`Dialogue.cs`) |
-| **Mon 11/16** Crawler 4 | `Combat.cs` | `Damage` · `Clamp` · `WinnerName` · `HeroAttacks` · or `BossPhase` (`Boss.cs`) · `TargetInLine` (`Ranged.cs`) |
-| **Tue 11/17** Crawler 5 | `Loot.cs`, `Characters.cs` | `CountItem` · `RemoveItem` · `DrinkPotion` · `HealthBar` · or `TickPowerups` (`Powerups.cs`) · `AddMany` (`Dialogue.cs`) |
+| **Thu 11/12** Crawler 2 | `Levels.cs` | `TileAt` · `IsWall` · `CountTiles` · `FindTileX` · `FindTileY` |
+| **Mon 11/16** Crawler 3 | `Characters.cs`, `Combat.cs` | `FindCharacter` · `TotalHealth` · `StrongestIndex` · `AnyAlive` · `NextAliveIndex` · `MonsterAt` · or `FindSpell` (`Magic.cs`) · `HasFlag` · `AllDefeated` (`Dialogue.cs`) |
+| **Tue 11/17** Crawler 4 | `Combat.cs` | `Damage` · `Clamp` · `WinnerName` · `HeroAttacks` · or `BossPhase` (`Boss.cs`) · `TargetInLine` (`Ranged.cs`) |
+| **Wed 11/18** Crawler 5 | `Loot.cs`, `Characters.cs` | `CountItem` · `RemoveItem` · `DrinkPotion` · `HealthBar` · or `TickPowerups` (`Powerups.cs`) · `AddMany` (`Dialogue.cs`) |
 
 ## How to rewrite a function
 
@@ -24,7 +24,7 @@ write them again yourself. Eight by Friday. The game must still work after each 
    A FAIL line shows the call, the right answer and what yours gave. Trace that call by hand.
 5. **Put two comment lines above it:**
    ```csharp
-   // Rewritten by me on 11/10.
+   // Rewritten by me on 11/12.
    // What I got wrong first: I compared x with level.Count instead of y.
    ```
    If nothing went wrong, say what you checked to be sure.
@@ -35,7 +35,7 @@ write them again yourself. Eight by Friday. The game must still work after each 
 Looking at the old version on github.com is the last resort. If you do it, say so in your
 comment. Saying so costs no points.
 
-## Tuesday 11/10 only: the graphical game
+## Thursday 11/12 only: the graphical game
 
 Before you start the menu:
 
@@ -60,10 +60,10 @@ monster to swing. This window runs the functions in `dungeon/`, including the on
 
 ## The three questions for each day's log
 
-**Tue 11/10.** 1. In `level[y][x]`, which index picks the row, and how did you check? 2. What will most people get wrong when they rewrite `TileAt`, and why is it easy to miss? 3. Which of your two functions calls another function, and what would break if that one were wrong?
+**Thu 11/12.** 1. In `level[y][x]`, which index picks the row, and how did you check? 2. What will most people get wrong when they rewrite `TileAt`, and why is it easy to miss? 3. Which of your two functions calls another function, and what would break if that one were wrong?
 
-**Thu 11/12.** 1. Why do these functions return an index and not a name? 2. What does your loop do when the list is empty, and how do you know? 3. Where in the game would the wrong answer from `AnyAlive` first show up?
+**Mon 11/16.** 1. Why do these functions return an index and not a name? 2. What does your loop do when the list is empty, and how do you know? 3. Where in the game would the wrong answer from `AnyAlive` first show up?
 
-**Mon 11/16.** 1. `Damage(4, 1)` and `Damage(1, 4)` both compile. How would a player notice the wrong one? 2. Which parameter of `HeroAttacks` is a list that the function changes, and how is that different from what `Heal` can do? 3. What did the self-check tell you today that reading your own code did not?
+**Tue 11/17.** 1. `Damage(4, 1)` and `Damage(1, 4)` both compile. How would a player notice the wrong one? 2. Which parameter of `HeroAttacks` is a list that the function changes, and how is that different from what `Heal` can do? 3. What did the self-check tell you today that reading your own code did not?
 
-**Tue 11/17.** 1. `RemoveItem` removes one potion, not all of them. Which line of yours makes that true? 2. What happens in `DrinkPotion` if the answer from `Heal` is not stored anywhere? 3. Of your eight rewrites, which one would you now be able to write on paper, and which one not yet?
+**Wed 11/18.** 1. `RemoveItem` removes one potion, not all of them. Which line of yours makes that true? 2. What happens in `DrinkPotion` if the answer from `Heal` is not stored anywhere? 3. Of your eight rewrites, which one would you now be able to write on paper, and which one not yet?

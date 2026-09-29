@@ -1,6 +1,6 @@
 # Playtest swap
 
-**Tuesday 11/24 · 50 minutes · 20 points · due at the end of class**
+**Tuesday 12/1 · 50 minutes · 20 points · due at the end of class**
 
 You play someone else's level **in your game**.
 
