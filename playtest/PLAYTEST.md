@@ -3,7 +3,7 @@
 **My name:**
 **Whose level I played:**
 
-Fill this in on Tuesday 11/24. The sheet `specs/playtest.md` says how.
+Fill this in on Tuesday 12/1. The sheet `specs/playtest.md` says how.
 
 ## The contract check
 
