@@ -4,7 +4,7 @@
 
 A top-down dungeon game that already works: monsters, a boss, arrows, spells, powerups, and people
 to talk to. From the first day you write small functions that the game calls: one quest each class.
-By Tuesday 12/1 you also add a character, rewrite eight of its functions, and design a level.
+By Wednesday 12/2 you also add a character, rewrite eight of its functions, and design a level.
 
 The game is built from **five tools and nothing else**: variables, `if / else if / else`,
 functions, `List<T>`, and `for` loops. No classes, no arrays, no `foreach`, no `switch`,
@@ -35,12 +35,12 @@ git push -u origin crawler
 
 | Branch | What goes on it | Pull request into `main` |
 |---|---|---|
-| `crawler` | Days 0 to 7, the functions quests | Mon 10/5, end of Day 7 |
-| `milestone-1` | `IsFairCharacter` and `MyCharacter` | Mon 10/12, when it is due |
-| `lists` | Days 8 to 10 | Mon 10/26, end of Day 10 |
-| `loops` | Days 11 to 16 | Mon 11/9, end of Day 16 |
-| `milestone-2` | the eight rewrites | Wed 11/18, 5:00 AM |
-| `milestone-3` | your level, the playtest, the demo | Tue 12/1, demo day |
+| `crawler` | Days 0 to 7, the functions quests | Tue 10/6, end of Day 7 |
+| `milestone-1` | `IsFairCharacter` and `MyCharacter` | Thu 10/15, when it is due |
+| `lists` | Days 8 to 10 | Wed 10/28, end of Day 10 |
+| `loops` | Days 11 to 16 | Tue 11/10, end of Day 16 |
+| `milestone-2` | the eight rewrites | Fri 11/20, 5:00 AM |
+| `milestone-3` | your level, the playtest, the demo | Wed 12/2, demo day |
 
 `main` is never edited directly: it receives your pull requests and the template's updates. The pull request steps are on the sheet of each unit's last day and on the one-page sheet "Branches and pull requests".
 
@@ -57,9 +57,9 @@ git push -u origin crawler
 | **`drills/`** | Starter programs for class. Your sheet tells you which one to copy into your work repository. | No, you copy them |
 | **`dungeon-tests/`** | The self-check. It calls every function and prints PASS or FAIL. | No |
 | **`specs/`** | The assignment and the milestone sheets. | No |
-| **`playtest/`** | Your playtest report, written on Tuesday 11/24. | Yes, on 11/24 |
+| **`playtest/`** | Your playtest report, written on Tuesday 12/1. | Yes, on 12/1 |
 | **`CREDITS.md`** | Who made the art and music you used, and any help you had. | Yes |
-| **`dungeon-graphics/`**, **`assets/`**, **`asset-library/`** | The graphical version and its art. We open these together on **Tuesday 11/10**. | Not the engine. Yes, `assets/` |
+| **`dungeon-graphics/`**, **`assets/`**, **`asset-library/`** | The graphical version and its art. We open these together on **Thursday 11/12**. | Not the engine. Yes, `assets/` |
 | **`dungeon-web/`** | The same game in a browser. | No |
 
 ## The three commands you will use every day
@@ -80,7 +80,7 @@ Inside the game, type `quests` to see what your quest functions do with the real
 
 ## The debugger
 
-From Tue 9/29. Open VS Code on this folder (the one with `dungeon/` in it), with the **C#** extension by Microsoft installed. Click in the margin to the left of a line number so a red dot appears, then press **F5** and pick **Play the game** or **Check one quest** (it asks for a quest name, such as `Quest04`). The program stops before the red dot, with the line in yellow; the **Variables** pane on the left shows what every variable holds. **F10** runs one line, **F11** steps into a function call, **Shift+F11** steps back out, **F5** continues, **Shift+F5** stops. Every quest sheet has a line that starts "Stuck on a row?" that says where the red dot goes.
+From Wed 9/30. Open VS Code on this folder (the one with `dungeon/` in it), with the **C#** extension by Microsoft installed. Click in the margin to the left of a line number so a red dot appears, then press **F5** and pick **Play the game** or **Check one quest** (it asks for a quest name, such as `Quest04`). The program stops before the red dot, with the line in yellow; the **Variables** pane on the left shows what every variable holds. **F10** runs one line, **F11** steps into a function call, **Shift+F11** steps back out, **F5** continues, **Shift+F5** stops. Every quest sheet has a line that starts "Stuck on a row?" that says where the red dot goes.
 
 A line that says **FAIL** shows the call, the right answer and what your function gave.
 Read the first one. A line that says **TO DO** names a quest or a milestone you have not reached yet. It is a reminder, not a mistake.
