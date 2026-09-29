@@ -42,7 +42,7 @@ git push -u origin crawler
 | `milestone-2` | the eight rewrites | Fri 11/20, 5:00 AM |
 | `milestone-3` | your level, the playtest, the demo | Wed 12/2, demo day |
 
-`main` is never edited directly: it receives your pull requests and the template's updates. The pull request steps are on the sheet of each unit's last day and on the one-page sheet "Branches and pull requests".
+`main` is never edited directly: it receives your pull requests and the template's updates. Your student-log repository uses the same branch names, at the same times: when this repository moves to a new branch, the log does too, with its own pull request. The pull request steps are on the sheet of each unit's last day and on the one-page sheet "Branches and pull requests".
 
 ## Where things are
 
