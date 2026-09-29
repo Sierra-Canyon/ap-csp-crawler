@@ -80,7 +80,7 @@ Inside the game, type `quests` to see what your quest functions do with the real
 
 ## The debugger
 
-From Wed 9/30. Open VS Code on this folder (the one with `dungeon/` in it), with the **C#** extension by Microsoft installed. Click in the margin to the left of a line number so a red dot appears, then press **F5** and pick **Play the game** or **Check one quest** (it asks for a quest name, such as `Quest04`). The program stops before the red dot, with the line in yellow; the **Variables** pane on the left shows what every variable holds. **F10** runs one line, **F11** steps into a function call, **Shift+F11** steps back out, **F5** continues, **Shift+F5** stops. Every quest sheet has a line that starts "Stuck on a row?" that says where the red dot goes.
+From Wed 9/30. Open VS Code on this folder (the one with `dungeon/` in it), with the **C#** extension by Microsoft installed. Click in the margin to the left of a line number so a red dot appears, then press **F5** and pick **Play the game** or **Check one quest** (it asks for a quest name, such as `Quest04`). The program stops before the red dot, with the line in yellow; the **Variables** pane on the left shows what every variable holds. **F10** runs one line, **F11** steps into a function call, **Shift+F11** steps back out, **F5** continues, **Shift+F5** stops. On a Mac the function keys need Fn held: Fn+F5, Fn+F10, Fn+F11. Every quest sheet has a line that starts "Stuck on a row?" that says where the red dot goes.
 
 A line that says **FAIL** shows the call, the right answer and what your function gave.
 Read the first one. A line that says **TO DO** names a quest or a milestone you have not reached yet. It is a reminder, not a mistake.
