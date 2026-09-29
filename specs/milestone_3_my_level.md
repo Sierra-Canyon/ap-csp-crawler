@@ -5,6 +5,10 @@
 The game's last level is whatever `MyLevel()` returns. You design it, and you add two functions
 of your own.
 
+## 0. Check your branch
+
+`git status` should say **`On branch milestone-3`**, in this repository and in your log repository; the Milestone 2 sheet had you start both. If it says `main`, stop: `git switch -c milestone-3` and `git push -u origin milestone-3` first. On demo day, when the level is done, merge `milestone-3` into `main` with a pull request in both repositories.
+
 ## 1. Design it on paper first
 
 Graph paper, one square per tile. Decide where the player starts, where the door is, and what is

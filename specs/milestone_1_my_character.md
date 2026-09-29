@@ -13,7 +13,7 @@ cd ~/version_control/apcsp-2026-2027-crawler-<your-username>
 git status
 ```
 
-`git status` should say **`On branch milestone-1`**. If it says `main`, stop: `git switch -c milestone-1` and `git push -u origin milestone-1` first, or the work lands somewhere I do not read. When the milestone is done, merge it into `main` with a pull request, the same way as the unit.
+`git status` should say **`On branch milestone-1`**. If it says `main`, stop: `git switch -c milestone-1` and `git push -u origin milestone-1` first, or the work lands somewhere I do not read. Your log repository is on `milestone-1` too. When the milestone is done, merge it into `main` with a pull request, the same way as the unit, in both repositories.
 
 ## 1. Write `IsFairCharacter`
 
@@ -86,6 +86,8 @@ git pull
 git switch -c lists
 git push -u origin lists
 ```
+
+The same pull request and the same four lines in your log repository, so both are on `lists`.
 
 ### Spec self-check, to copy into the pull request
 

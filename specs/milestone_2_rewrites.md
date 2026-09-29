@@ -5,6 +5,10 @@
 Each day you choose **two** functions from that day's menu, delete what is inside them, and
 write them again yourself. Eight by Friday. The game must still work after each one.
 
+## 0. Check your branch
+
+`git status` should say **`On branch milestone-2`**, in this repository and in your log repository; Day 16's pull request sheet had you create both. If it says `main`, stop: `git switch -c milestone-2` and `git push -u origin milestone-2` first. When the eight are done, merge `milestone-2` into `main` with a pull request in both repositories, then start `milestone-3` in both (`git checkout main`, `git pull`, `git switch -c milestone-3`, `git push -u origin milestone-3`). Everything from Milestone 3 through demo day goes on `milestone-3`.
+
 ## The menu
 
 | Day | File | Choose two |
