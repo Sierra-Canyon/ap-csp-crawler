@@ -1,5 +1,5 @@
 // ======================================================================
-//  Quest 10: Finding by Hand.   Lists 3, Mon 10/26
+//  Quest 10: Finding by Hand.   Lists 3, Wed 10/28
 //  The sheet for this day has the rules and the rows it is graded on.
 //  Check it:   cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-tests
 //              then   dotnet run Quest10

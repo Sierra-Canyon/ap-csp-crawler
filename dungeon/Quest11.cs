@@ -1,5 +1,5 @@
 // ======================================================================
-//  Quest 11: Bars and Dots.   For 1, Wed 10/28
+//  Quest 11: Bars and Dots.   For 1, Thu 10/29
 //  The sheet for this day has the rules and the rows it is graded on.
 //  Check it:   cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-tests
 //              then   dotnet run Quest11

@@ -1,5 +1,5 @@
 // ======================================================================
-//  Quest 13: Totals and Records.   For 3, Tue 11/3
+//  Quest 13: Totals and Records.   For 3, Wed 11/4
 //  The sheet for this day has the rules and the rows it is graded on.
 //  Check it:   cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-tests
 //              then   dotnet run Quest13

@@ -1,5 +1,5 @@
 // ======================================================================
-//  Quest 6: Borrowed Tools.   Functions 6, Fri 10/2
+//  Quest 6: Borrowed Tools.   Functions 6, Mon 10/5
 //  The sheet for this day has the rules and the rows it is graded on.
 //  Check it:   cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-tests
 //              then   dotnet run Quest06

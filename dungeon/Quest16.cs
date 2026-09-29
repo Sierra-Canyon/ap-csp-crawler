@@ -1,5 +1,5 @@
 // ======================================================================
-//  Quest 16: The Walk.   For 6, Mon 11/9
+//  Quest 16: The Walk.   For 6, Tue 11/10
 //  The sheet for this day has the rules and the rows it is graded on.
 //  Check it:   cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-tests
 //              then   dotnet run Quest16

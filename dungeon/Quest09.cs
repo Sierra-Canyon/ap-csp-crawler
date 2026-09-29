@@ -1,5 +1,5 @@
 // ======================================================================
-//  Quest 9: The Monster Book.   Lists 2, Fri 10/16
+//  Quest 9: The Monster Book.   Lists 2, Mon 10/26
 //  The sheet for this day has the rules and the rows it is graded on.
 //  Check it:   cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-tests
 //              then   dotnet run Quest09

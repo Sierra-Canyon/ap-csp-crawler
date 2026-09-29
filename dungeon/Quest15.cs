@@ -1,5 +1,5 @@
 // ======================================================================
-//  Quest 15: Wide Screen.   For 5, Thu 11/5
+//  Quest 15: Wide Screen.   For 5, Mon 11/9
 //  The sheet for this day has the rules and the rows it is graded on.
 //  Check it:   cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-tests
 //              then   dotnet run Quest15

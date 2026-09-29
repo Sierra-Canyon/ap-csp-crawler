@@ -1,5 +1,5 @@
 // ======================================================================
-//  Quest 7: Three Gates, One Function.   Review, Mon 10/5
+//  Quest 7: Three Gates, One Function.   Review, Tue 10/6
 //  The sheet for this day has the rules and the rows it is graded on.
 //  Check it:   cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-tests
 //              then   dotnet run Quest07

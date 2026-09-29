@@ -1,5 +1,5 @@
 // ======================================================================
-//  Quest 14: Rows and Columns.   For 4, Wed 11/4
+//  Quest 14: Rows and Columns.   For 4, Thu 11/5
 //  The sheet for this day has the rules and the rows it is graded on.
 //  Check it:   cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-tests
 //              then   dotnet run Quest14
