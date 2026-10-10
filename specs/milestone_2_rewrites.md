@@ -7,7 +7,7 @@ write them again yourself. Eight by Friday. The game must still work after each 
 
 ## 0. Check your branch
 
-`git status` should say **`On branch milestone-2`**, in this repository and in your log repository; Day 16's pull request sheet had you create both. If it says `main`, stop: `git switch -c milestone-2` and `git push -u origin milestone-2` first. When the eight are done, merge `milestone-2` into `main` with a pull request in both repositories, then start `milestone-3` in both (`git checkout main`, `git pull`, `git switch -c milestone-3`, `git push -u origin milestone-3`). Everything from Milestone 3 through demo day goes on `milestone-3`.
+`git status` should say **`On branch milestone-2`**, in this repository and in your log repository; Day 16's pull request sheet had you create both. If it says `main`, stop: `git switch -c milestone-2` and `git push -u origin milestone-2` first. Open the pull request into `main` on the first day, with `jd12` as reviewer, so every push shows in it. I grade what is on `milestone-2` at 5:00 AM on Friday 11/20. In class on Friday, after Quiz 4, you merge it yourself, in both repositories, then start `milestone-3` in both (`git switch main`, `git pull`, `git switch -c milestone-3`, `git push -u origin milestone-3`). Everything from Milestone 3 through demo day goes on `milestone-3`.
 
 ## The menu
 
@@ -32,8 +32,8 @@ write them again yourself. Eight by Friday. The game must still work after each 
    // What I got wrong first: I compared x with level.Count instead of y.
    ```
    If nothing went wrong, say what you checked to be sure.
-6. **Commit that one function:** `git add dungeon/Levels.cs`, `git commit`, message exactly
-   `feat: Rewrite TileAt`. Then `git push`.
+6. **Commit that one function** on the day you write it: `git add dungeon/Levels.cs`, `git commit`,
+   message exactly `feat: Rewrite TileAt`. Then `git push`. The commits are counted by day.
 
 **Stuck?** Your hints, in this order: the README line, the FAIL message, your notes, me.
 Looking at the old version on github.com is the last resort. If you do it, say so in your
@@ -51,12 +51,12 @@ dotnet run
 The first run downloads the drawing library, so it takes a minute. Arrow keys move. Walk into a
 monster to swing. This window runs the functions in `dungeon/`, including the ones you rewrite.
 
-### Spec self-check, to copy into the pull request on Friday
+### Spec self-check, to copy into the pull request by Thursday night
 
 ```
 - [ ] Eight functions rewritten, two from each day's menu
 - [ ] Each has my two comment lines above it
-- [ ] Each has its own commit, named feat: Rewrite <FunctionName>
+- [ ] Each has its own commit, named feat: Rewrite <FunctionName>, made on the day I wrote it
 - [ ] No signature was changed
 - [ ] The self-check ends with 0 failed
 - [ ] The FiveTools line says none

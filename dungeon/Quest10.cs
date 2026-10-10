@@ -17,6 +17,21 @@ int CountInThree(List<string> items, string wanted)
 }
 
 // ----------------------------------------------------------------------
+//  Yours: Your Riddle.   Part of Quest 10, graded. Your own ideas go here.
+// ----------------------------------------------------------------------
+string MyRiddle()
+{
+    return "";     // QUEST 10, YOURS: replace this line
+}
+
+List<string> MyRiddleAnswers()
+{
+    List<string> answers = new List<string>();
+    // YOURS: exactly three Add lines go here
+    return answers;
+}
+
+// ----------------------------------------------------------------------
 //  Challenge 10: Take One.   Extra. Not graded.
 //  CHALLENGE NOT STARTED  <- delete this whole line when you begin the challenge
 // ----------------------------------------------------------------------

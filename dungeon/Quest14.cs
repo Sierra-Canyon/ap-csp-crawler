@@ -17,6 +17,16 @@ int CountEither(List<string> level, char a, char b)
 }
 
 // ----------------------------------------------------------------------
+//  Yours: Your Room.   Part of Quest 14, graded. Your own ideas go here.
+// ----------------------------------------------------------------------
+List<string> MyRoom()
+{
+    List<string> room = new List<string>();
+    // YOURS: one Add for each row of your room goes here
+    return room;
+}
+
+// ----------------------------------------------------------------------
 //  Challenge 14: The Richest Row.   Extra. Not graded.
 //  CHALLENGE NOT STARTED  <- delete this whole line when you begin the challenge
 // ----------------------------------------------------------------------

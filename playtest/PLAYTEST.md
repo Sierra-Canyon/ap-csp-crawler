@@ -3,7 +3,8 @@
 **My name:**
 **Whose level I played:**
 
-Fill this in on Tuesday 12/1. The sheet `specs/playtest.md` says how.
+Fill this in on Tuesday 12/1. The sheet `specs/playtest.md` says how. Before you commit this file,
+its step 5 puts back your own `MyLevel.cs`, `Program.cs` and art. Commit only this file.
 
 ## The contract check
 

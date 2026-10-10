@@ -29,6 +29,21 @@ void AddTrophy(List<string> shelf, string trophy)
 }
 
 // ----------------------------------------------------------------------
+//  Yours: Your Trophies.   Part of Quest 8, graded. Your own ideas go here.
+// ----------------------------------------------------------------------
+List<string> MyTrophies()
+{
+    List<string> mine = new List<string>();
+    // YOURS: three to five Add lines go here, one for each trophy
+    return mine;
+}
+
+string TrophyFrom(string monster)
+{
+    return "";     // QUEST 8, YOURS: replace this line
+}
+
+// ----------------------------------------------------------------------
 //  Challenge 8: Reaching In.   Extra. Not graded.
 //  CHALLENGE NOT STARTED  <- delete this whole line when you begin the challenge
 // ----------------------------------------------------------------------

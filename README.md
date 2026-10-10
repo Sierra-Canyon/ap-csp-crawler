@@ -125,9 +125,9 @@ Every level, character and conversation in the class follows these.
 
 ## Branch, commits, pull request
 
-`main` is the record of finished work. **You never work on it directly.** This project has
-one branch, called exactly `crawler`, and one pull request for the whole project.
-You start the branch on Day 0. Milestone 1 walks you through the pull request.
+`main` is the record of finished work. **You never work on it directly.** Each unit and each
+milestone has its own branch and its own pull request into `main`: the table at the top of this
+page, and the sheet "Branches and pull requests".
 
 **Commit while you work.** One commit per function you write or rewrite, and a push before you leave the room. A project that
 arrives as one commit tells me nothing about how you got there. I look at this.

@@ -17,6 +17,14 @@ string PageText(List<string> bookNames, List<int> bookHealth, int page)
 }
 
 // ----------------------------------------------------------------------
+//  Yours: Your Monsters.   Part of Quest 9, graded. Your own ideas go here.
+// ----------------------------------------------------------------------
+void MyMonsters(List<string> bookNames, List<int> bookHealth)
+{
+    // YOURS: two to four calls to AddPage go here
+}
+
+// ----------------------------------------------------------------------
 //  Challenge 9: Swap Two Pages.   Extra. Not graded.
 //  CHALLENGE NOT STARTED  <- delete this whole line when you begin the challenge
 // ----------------------------------------------------------------------

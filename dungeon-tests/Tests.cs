@@ -310,6 +310,9 @@ if (Directory.Exists(dungeonFolder))
             if (System.Text.RegularExpressions.Regex.IsMatch(code, @"\bwhile\b")) { whileCount++; if (Path.GetFileName(file) != "Program.cs") breaks.Add(Path.GetFileName(file) + " line " + (n + 1) + ": while. Use for. The game loop in Program.cs is the only while"); }
             for (int r = 0; r < rules.GetLength(0); r++)
                 if (System.Text.RegularExpressions.Regex.IsMatch(code, rules[r, 0]) && !(Path.GetFileName(file) == "QuestBoard.cs" && r == rules.GetLength(0) - 1)) breaks.Add(Path.GetFileName(file) + " line " + (n + 1) + ": " + rules[r, 1]);
+            // From Lists 1 on, a quest is the loop or the search written by hand: a library call that does the whole job does not count.
+            if (System.Text.RegularExpressions.Regex.IsMatch(Path.GetFileName(file), @"^Quest(0[89]|1[0-9])\.cs$") && System.Text.RegularExpressions.Regex.IsMatch(code, @"\.(IndexOf|LastIndexOf|Contains|Remove|Insert|Reverse|Sort|PadLeft|PadRight)\s*\(|\bstring\.(Join|Concat)\b|\bnew\s+string\s*\("))
+                breaks.Add(Path.GetFileName(file) + " line " + (n + 1) + ": a library call that does the quest's job (IndexOf, Contains, string.Join, new string ...). Write the loop or the test yourself");
         }
     }
     if (whileCount > 1) breaks.Add("Program.cs has " + whileCount + " while loops. The game loop is the only one allowed");
@@ -388,6 +391,60 @@ string BookAfterSwap(int i, int j) { List<string> n = new List<string> { "Grub",
 List<string> Three(string a, string b, string c) { return new List<string> { a, b, c }; }
 string ThreeAfterTake(string a, string b, string c, string wanted) { List<string> l = Three(a, b, c); TakeFromThree(l, wanted); return ShowS(l); }
 List<string> Walk(string commands) { return new List<string>(commands.Split(' ')); }
+// ---- Yours: these check the shape of what a student writes, never the words
+bool YoursBetween(List<string> l, int low, int high) { return l.Count >= low && l.Count <= high; }
+bool YoursNoneOf(List<string> l, string banned) { List<string> no = new List<string>(banned.Split('|')); for (int i = 0; i < l.Count; i++) { if (l[i].Trim() == "" || no.Contains(l[i].Trim().ToLower())) return false; } return true; }
+bool YoursAllDifferent(List<string> l) { for (int i = 0; i < l.Count; i++) { if (l[i].Trim() == "") return false; for (int j = 0; j < i; j++) if (l[i] == l[j]) return false; } return true; }
+bool YoursHasMore(string s, string name) { return s.Contains(name) && s.Trim().Length > name.Length + 1; }
+string YoursSame(string line, int n) { return line.Replace(n.ToString(), "#"); }
+bool YoursBook(int which)
+{
+    List<string> n = new List<string>(); List<int> h = new List<int>(); MyMonsters(n, h);
+    if (which == 1) return n.Count == h.Count && n.Count >= 2 && n.Count <= 4;
+    if (which == 2) { for (int i = 0; i < h.Count; i++) if (h[i] < 2 || h[i] > 12) return false; return true; }
+    return YoursNoneOf(n, "grub|bat|ogre");
+}
+bool YoursAnswersOk() { List<string> a = MyRiddleAnswers(); if (a.Count != 3 || !YoursAllDifferent(a)) return false; for (int i = 0; i < 3; i++) if (a[i] != a[i].ToLower() || a[i] != a[i].Trim()) return false; return true; }
+bool YoursFindsOwn() { List<string> a = MyRiddleAnswers(); if (a.Count != 3) return false; for (int i = 0; i < 3; i++) if (FindInThree(a, a[i]) != i) return false; return true; }
+bool YoursCry(int which)
+{
+    if (which == 1) return MyRallyCry(7).Contains("7") && MyRallyCry(12).Contains("12");
+    if (which == 2) return MyRallyCry(6).Trim() != "" && YoursSame(MyRallyCry(6), 6) != YoursSame(MyRallyCry(14), 14);
+    return YoursSame(MyRallyCry(9), 9) == YoursSame(MyRallyCry(6), 6) && YoursSame(MyRallyCry(10), 10) == YoursSame(MyRallyCry(14), 14);
+}
+bool YoursRoom(int which)
+{
+    List<string> r = MyRoom();
+    if (r.Count == 0) return false;
+    if (which == 1) { if (r.Count < 5 || r[0].Length < 8) return false; for (int y = 0; y < r.Count; y++) if (r[y].Length != r[0].Length) return false; return true; }
+    if (which == 2)
+    {
+        for (int y = 0; y < r.Count; y++) for (int x = 0; x < r[y].Length; x++)
+        {
+            char t = r[y][x];
+            if ("#.@M$+".IndexOf(t) < 0) return false;
+            if ((y == 0 || y == r.Count - 1 || x == 0 || x == r[y].Length - 1) && t != '#') return false;
+        }
+        return CountTiles(r, '@') == 1 && CountTiles(r, '+') >= 1 && CountTiles(r, 'M') >= 1 && CountTiles(r, '$') >= 1;
+    }
+    string got = Reach(r, '+'); string[] parts = got.Split(' ');
+    return parts.Length == 3 && parts[0] == parts[2] && parts[2] != "0";
+}
+bool YoursWide(int which)
+{
+    string tiles = "#.M$+@";
+    if (which == 1) { for (int i = 0; i < tiles.Length; i++) if (WideTile(tiles[i]).Length != 2) return false; return WideTile('N') == "NN" && WideTile('*') == "**"; }
+    List<string> looks = new List<string>(); for (int i = 0; i < tiles.Length; i++) looks.Add(WideTile(tiles[i]));
+    for (int i = 0; i < looks.Count; i++) for (int j = 0; j < i; j++) if (looks[i] == looks[j]) return false;
+    return WideTile('#') != "##" && WideTile('.') != "..";
+}
+bool YoursEnding(int which)
+{
+    string fast = MyEnding(true, 40), slow = MyEnding(true, 250), lost = MyEnding(false, 40);
+    if (which == 1) { List<string> three = new List<string> { YoursSame(fast, 40), YoursSame(slow, 250), YoursSame(lost, 40) }; return YoursAllDifferent(three); }
+    if (which == 2) return fast.Trim() != "" && YoursSame(MyEnding(true, 99), 99) == YoursSame(fast, 40) && YoursSame(MyEnding(true, 100), 100) == YoursSame(slow, 250);
+    return fast.Contains("40") && slow.Contains("250") && MyEnding(false, 77).Contains("77");
+}
 
 QuestRow(true, "Quest00", "Quest 0: Party Mood", "Quest00.cs", "QUEST NOT STARTED", "PartyMood(25, 2)", "strong", () => PartyMood(25, 2));
 QuestRow(true, "Quest00", "Quest 0: Party Mood", "Quest00.cs", "QUEST NOT STARTED", "PartyMood(17, 0)", "strong", () => PartyMood(17, 0));
@@ -486,48 +543,61 @@ QuestRow(false, "Quest07", "Challenge 7: The Other Direction   (extra, not grade
 QuestRow(false, "Quest07", "Challenge 7: The Other Direction   (extra, not graded)", "Quest07.cs", "CHALLENGE NOT STARTED", "The two of them call PotionLabel this many times", "0", () => (Calls("Quest07.cs", "SmallPotionLabel", "PotionLabel") + Calls("Quest07.cs", "LargePotionLabel", "PotionLabel")).ToString(), "SmallPotionLabel()", "small potion (+3)", () => SmallPotionLabel());
 QuestRow(true, "Quest08", "Quest 8: The Trophy Shelf", "Quest08.cs", "QUEST NOT STARTED", "MakeTrophyShelf()", "[rusty key, bat wing, ogre tooth]", () => ShowS(MakeTrophyShelf()));
 QuestRow(true, "Quest08", "Quest 8: The Trophy Shelf", "Quest08.cs", "QUEST NOT STARTED", "FirstTrophy([rusty key, bat wing, ogre tooth])", "rusty key", () => FirstTrophy(Shelf(3)));
-QuestRow(true, "Quest08", "Quest 8: The Trophy Shelf", "Quest08.cs", "QUEST NOT STARTED", "FirstTrophy([])", "nothing", () => FirstTrophy(Shelf(0)));
+QuestRow(true, "Quest08", "Quest 8: The Trophy Shelf", "Quest08.cs", "QUEST NOT STARTED", "FirstTrophy([])", "nothing", () => FirstTrophy(Shelf(0)), "FirstTrophy([rusty key, bat wing, ogre tooth])", "rusty key", () => FirstTrophy(Shelf(3)));
 QuestRow(true, "Quest08", "Quest 8: The Trophy Shelf", "Quest08.cs", "QUEST NOT STARTED", "LastTrophy([rusty key, bat wing, ogre tooth])", "ogre tooth", () => LastTrophy(Shelf(3)));
 QuestRow(true, "Quest08", "Quest 8: The Trophy Shelf", "Quest08.cs", "QUEST NOT STARTED", "LastTrophy([rusty key])", "rusty key", () => LastTrophy(Shelf(1)));
-QuestRow(true, "Quest08", "Quest 8: The Trophy Shelf", "Quest08.cs", "QUEST NOT STARTED", "LastTrophy([])", "nothing", () => LastTrophy(Shelf(0)));
-QuestRow(true, "Quest08", "Quest 8: The Trophy Shelf", "Quest08.cs", "QUEST NOT STARTED", "AddTrophy(shelf of 3, \"crown\"), then the shelf", "[rusty key, bat wing, ogre tooth, crown]", () => ShelfAfterAdd(3, "crown"));
-QuestRow(true, "Quest08", "Quest 8: The Trophy Shelf", "Quest08.cs", "QUEST NOT STARTED", "AddTrophy(shelf of 5, \"crown\"), then the Count", "5", () => ShelfCountAfterAdd(5, "crown"), "AddTrophy(shelf of 3, \"crown\"), then the shelf", "[rusty key, bat wing, ogre tooth, crown]", () => ShelfAfterAdd(3, "crown"));
+QuestRow(true, "Quest08", "Quest 8: The Trophy Shelf", "Quest08.cs", "QUEST NOT STARTED", "LastTrophy([])", "nothing", () => LastTrophy(Shelf(0)), "LastTrophy([rusty key, bat wing, ogre tooth])", "ogre tooth", () => LastTrophy(Shelf(3)));
+QuestRow(true, "Quest08", "Quest 8: The Trophy Shelf", "Quest08.cs", "QUEST NOT STARTED", "AddTrophy(shelf of 4, \"crown\"), then the shelf", "[rusty key, bat wing, ogre tooth, silver cup, crown]", () => ShelfAfterAdd(4, "crown"));
+QuestRow(true, "Quest08", "Quest 8: The Trophy Shelf", "Quest08.cs", "QUEST NOT STARTED", "AddTrophy(shelf of 5, \"crown\"), then the Count", "5", () => ShelfCountAfterAdd(5, "crown"), "AddTrophy(shelf of 4, \"crown\"), then the shelf", "[rusty key, bat wing, ogre tooth, silver cup, crown]", () => ShelfAfterAdd(4, "crown"));
 QuestRow(true, "Quest08", "Quest 8: The Trophy Shelf", "Quest08.cs", "QUEST NOT STARTED", "AddTrophy(shelf of 5, \"crown\") prints", "The shelf is full.", () => Printed(() => AddTrophy(Shelf(5), "crown")));
+QuestRow(true, "Quest08", "Quest 8: The Trophy Shelf", "Quest08.cs", "QUEST NOT STARTED", "MyTrophies() holds 3, 4 or 5 trophies", "True", () => YoursBetween(MyTrophies(), 3, 5).ToString());
+QuestRow(true, "Quest08", "Quest 8: The Trophy Shelf", "Quest08.cs", "QUEST NOT STARTED", "MyTrophies() has no rusty key, bat wing or ogre tooth, and no empty trophy", "True", () => YoursNoneOf(MyTrophies(), "rusty key|bat wing|ogre tooth").ToString(), "MyTrophies() holds 3, 4 or 5 trophies", "True", () => YoursBetween(MyTrophies(), 3, 5).ToString());
+QuestRow(true, "Quest08", "Quest 8: The Trophy Shelf", "Quest08.cs", "QUEST NOT STARTED", "TrophyFrom(\"Grub\") and TrophyFrom(\"Ogre\") each have their monster's name in them, and more", "True", () => (YoursHasMore(TrophyFrom("Grub"), "Grub") && YoursHasMore(TrophyFrom("Ogre"), "Ogre")).ToString());
 QuestRow(false, "Quest08", "Challenge 8: Reaching In   (extra, not graded)", "Quest08.cs", "CHALLENGE NOT STARTED", "TrophyAt([rusty key, bat wing, ogre tooth], 1)", "bat wing", () => TrophyAt(Shelf(3), 1));
 QuestRow(false, "Quest08", "Challenge 8: Reaching In   (extra, not graded)", "Quest08.cs", "CHALLENGE NOT STARTED", "TrophyAt([rusty key, bat wing, ogre tooth], 3)", "nothing", () => TrophyAt(Shelf(3), 3));
 QuestRow(false, "Quest08", "Challenge 8: Reaching In   (extra, not graded)", "Quest08.cs", "CHALLENGE NOT STARTED", "TrophyAt([rusty key, bat wing, ogre tooth], -1)", "nothing", () => TrophyAt(Shelf(3), -1));
 QuestRow(false, "Quest08", "Challenge 8: Reaching In   (extra, not graded)", "Quest08.cs", "CHALLENGE NOT STARTED", "MiddleTrophy(shelf of 3)", "bat wing", () => MiddleTrophy(Shelf(3)));
 QuestRow(false, "Quest08", "Challenge 8: Reaching In   (extra, not graded)", "Quest08.cs", "CHALLENGE NOT STARTED", "MiddleTrophy(shelf of 4)", "ogre tooth", () => MiddleTrophy(Shelf(4)));
 QuestRow(false, "Quest08", "Challenge 8: Reaching In   (extra, not graded)", "Quest08.cs", "CHALLENGE NOT STARTED", "MiddleTrophy([])", "nothing", () => MiddleTrophy(Shelf(0)));
-QuestRow(true, "Quest09", "Quest 9: The Monster Book", "Quest09.cs", "QUEST NOT STARTED", "AddPage twice, then the two Counts", "2 2", () => BookCounts());
+QuestRow(true, "Quest09", "Quest 9: The Monster Book", "Quest09.cs", "QUEST NOT STARTED", "AddPage twice, then bookNames.Count and bookHealth.Count", "2 2", () => BookCounts());
 QuestRow(true, "Quest09", "Quest 9: The Monster Book", "Quest09.cs", "QUEST NOT STARTED", "AddPage(..., \"Grub\", 4) and AddPage(..., \"Bat\", 3), then PageText(..., 0)", "Page 0: Grub (4)", () => BookPage(0));
 QuestRow(true, "Quest09", "Quest 9: The Monster Book", "Quest09.cs", "QUEST NOT STARTED", "the same book, PageText(..., 1)", "Page 1: Bat (3)", () => BookPage(1));
-QuestRow(true, "Quest09", "Quest 9: The Monster Book", "Quest09.cs", "QUEST NOT STARTED", "the same book, PageText(..., 2)", "No such page.", () => BookPage(2));
-QuestRow(true, "Quest09", "Quest 9: The Monster Book", "Quest09.cs", "QUEST NOT STARTED", "the same book, PageText(..., -1)", "No such page.", () => BookPage(-1));
+QuestRow(true, "Quest09", "Quest 9: The Monster Book", "Quest09.cs", "QUEST NOT STARTED", "the same book, PageText(..., 2)", "No such page.", () => BookPage(2), "AddPage(..., \"Grub\", 4) and AddPage(..., \"Bat\", 3), then PageText(..., 0)", "Page 0: Grub (4)", () => BookPage(0));
+QuestRow(true, "Quest09", "Quest 9: The Monster Book", "Quest09.cs", "QUEST NOT STARTED", "the same book, PageText(..., -1)", "No such page.", () => BookPage(-1), "AddPage(..., \"Grub\", 4) and AddPage(..., \"Bat\", 3), then PageText(..., 0)", "Page 0: Grub (4)", () => BookPage(0));
+QuestRow(true, "Quest09", "Quest 9: The Monster Book", "Quest09.cs", "QUEST NOT STARTED", "MyMonsters on an empty book adds 2 to 4 pages, the same number to both lists", "True", () => YoursBook(1).ToString());
+QuestRow(true, "Quest09", "Quest 9: The Monster Book", "Quest09.cs", "QUEST NOT STARTED", "every health MyMonsters adds is from 2 to 12", "True", () => YoursBook(2).ToString(), "AddPage twice, then bookNames.Count and bookHealth.Count", "2 2", () => BookCounts());
+QuestRow(true, "Quest09", "Quest 9: The Monster Book", "Quest09.cs", "QUEST NOT STARTED", "no monster MyMonsters adds is Grub, Bat or Ogre, or has no name", "True", () => YoursBook(3).ToString(), "AddPage twice, then bookNames.Count and bookHealth.Count", "2 2", () => BookCounts());
+QuestRow(true, "Quest09", "Quest 9: The Monster Book", "Quest09.cs", "QUEST NOT STARTED", "MyMonsters calls AddPage at least twice", "True", () => (Calls("Quest09.cs", "MyMonsters", "AddPage") >= 2).ToString());
 QuestRow(false, "Quest09", "Challenge 9: Swap Two Pages   (extra, not graded)", "Quest09.cs", "CHALLENGE NOT STARTED", "a book of Grub 4, Bat 3, Ogre 8. SwapPages(..., 0, 2), then every page", "Ogre (8), Bat (3), Grub (4)", () => BookAfterSwap(0, 2));
-QuestRow(false, "Quest09", "Challenge 9: Swap Two Pages   (extra, not graded)", "Quest09.cs", "CHALLENGE NOT STARTED", "the same book, SwapPages(..., 1, 1)", "Grub (4), Bat (3), Ogre (8)", () => BookAfterSwap(1, 1), "a book of Grub 4, Bat 3, Ogre 8. SwapPages(..., 0, 2), then every page", "Ogre (8), Bat (3), Grub (4)", () => BookAfterSwap(0, 2));
-QuestRow(false, "Quest09", "Challenge 9: Swap Two Pages   (extra, not graded)", "Quest09.cs", "CHALLENGE NOT STARTED", "the same book, SwapPages(..., 0, 3)", "Grub (4), Bat (3), Ogre (8)", () => BookAfterSwap(0, 3), "a book of Grub 4, Bat 3, Ogre 8. SwapPages(..., 0, 2), then every page", "Ogre (8), Bat (3), Grub (4)", () => BookAfterSwap(0, 2));
-QuestRow(false, "Quest09", "Challenge 9: Swap Two Pages   (extra, not graded)", "Quest09.cs", "CHALLENGE NOT STARTED", "the same book, SwapPages(..., -1, 2)", "Grub (4), Bat (3), Ogre (8)", () => BookAfterSwap(-1, 2), "a book of Grub 4, Bat 3, Ogre 8. SwapPages(..., 0, 2), then every page", "Ogre (8), Bat (3), Grub (4)", () => BookAfterSwap(0, 2));
+QuestRow(false, "Quest09", "Challenge 9: Swap Two Pages   (extra, not graded)", "Quest09.cs", "CHALLENGE NOT STARTED", "a new book of Grub 4, Bat 3, Ogre 8, SwapPages(..., 1, 1)", "Grub (4), Bat (3), Ogre (8)", () => BookAfterSwap(1, 1), "a book of Grub 4, Bat 3, Ogre 8. SwapPages(..., 0, 2), then every page", "Ogre (8), Bat (3), Grub (4)", () => BookAfterSwap(0, 2));
+QuestRow(false, "Quest09", "Challenge 9: Swap Two Pages   (extra, not graded)", "Quest09.cs", "CHALLENGE NOT STARTED", "a new book of Grub 4, Bat 3, Ogre 8, SwapPages(..., 0, 3)", "Grub (4), Bat (3), Ogre (8)", () => BookAfterSwap(0, 3), "a book of Grub 4, Bat 3, Ogre 8. SwapPages(..., 0, 2), then every page", "Ogre (8), Bat (3), Grub (4)", () => BookAfterSwap(0, 2));
+QuestRow(false, "Quest09", "Challenge 9: Swap Two Pages   (extra, not graded)", "Quest09.cs", "CHALLENGE NOT STARTED", "a new book of Grub 4, Bat 3, Ogre 8, SwapPages(..., -1, 2)", "Grub (4), Bat (3), Ogre (8)", () => BookAfterSwap(-1, 2), "a book of Grub 4, Bat 3, Ogre 8. SwapPages(..., 0, 2), then every page", "Ogre (8), Bat (3), Grub (4)", () => BookAfterSwap(0, 2));
 QuestRow(true, "Quest10", "Quest 10: Finding by Hand", "Quest10.cs", "QUEST NOT STARTED", "FindInThree([potion, arrow, potion], \"arrow\")", "1", () => FindInThree(Three("potion", "arrow", "potion"), "arrow").ToString());
 QuestRow(true, "Quest10", "Quest 10: Finding by Hand", "Quest10.cs", "QUEST NOT STARTED", "FindInThree([potion, arrow, potion], \"potion\")  (the first one)", "0", () => FindInThree(Three("potion", "arrow", "potion"), "potion").ToString());
 QuestRow(true, "Quest10", "Quest 10: Finding by Hand", "Quest10.cs", "QUEST NOT STARTED", "FindInThree([gold, gold, stone], \"stone\")", "2", () => FindInThree(Three("gold", "gold", "stone"), "stone").ToString());
-QuestRow(true, "Quest10", "Quest 10: Finding by Hand", "Quest10.cs", "QUEST NOT STARTED", "FindInThree([potion, arrow, potion], \"shield\")", "-1", () => FindInThree(Three("potion", "arrow", "potion"), "shield").ToString());
+QuestRow(true, "Quest10", "Quest 10: Finding by Hand", "Quest10.cs", "QUEST NOT STARTED", "FindInThree([potion, arrow, potion], \"shield\")", "-1", () => FindInThree(Three("potion", "arrow", "potion"), "shield").ToString(), "FindInThree([potion, arrow, potion], \"arrow\")", "1", () => FindInThree(Three("potion", "arrow", "potion"), "arrow").ToString());
 QuestRow(true, "Quest10", "Quest 10: Finding by Hand", "Quest10.cs", "QUEST NOT STARTED", "CountInThree([potion, arrow, potion], \"potion\")", "2", () => CountInThree(Three("potion", "arrow", "potion"), "potion").ToString());
 QuestRow(true, "Quest10", "Quest 10: Finding by Hand", "Quest10.cs", "QUEST NOT STARTED", "CountInThree([potion, arrow, potion], \"arrow\")", "1", () => CountInThree(Three("potion", "arrow", "potion"), "arrow").ToString());
 QuestRow(true, "Quest10", "Quest 10: Finding by Hand", "Quest10.cs", "QUEST NOT STARTED", "CountInThree([gold, gold, gold], \"gold\")", "3", () => CountInThree(Three("gold", "gold", "gold"), "gold").ToString());
-QuestRow(true, "Quest10", "Quest 10: Finding by Hand", "Quest10.cs", "QUEST NOT STARTED", "CountInThree([potion, arrow, potion], \"shield\")", "0", () => CountInThree(Three("potion", "arrow", "potion"), "shield").ToString());
+QuestRow(true, "Quest10", "Quest 10: Finding by Hand", "Quest10.cs", "QUEST NOT STARTED", "CountInThree([potion, arrow, potion], \"shield\")", "0", () => CountInThree(Three("potion", "arrow", "potion"), "shield").ToString(), "CountInThree([potion, arrow, potion], \"potion\")", "2", () => CountInThree(Three("potion", "arrow", "potion"), "potion").ToString());
+QuestRow(true, "Quest10", "Quest 10: Finding by Hand", "Quest10.cs", "QUEST NOT STARTED", "MyRiddle() is a question: more than one word, ending with ?", "True", () => (MyRiddle().Trim().EndsWith("?") && MyRiddle().Trim().Contains(" ")).ToString());
+QuestRow(true, "Quest10", "Quest 10: Finding by Hand", "Quest10.cs", "QUEST NOT STARTED", "MyRiddleAnswers() holds exactly 3 different answers, all lowercase", "True", () => YoursAnswersOk().ToString());
+QuestRow(true, "Quest10", "Quest 10: Finding by Hand", "Quest10.cs", "QUEST NOT STARTED", "your FindInThree finds each of your three answers at its own index", "True", () => YoursFindsOwn().ToString());
 QuestRow(false, "Quest10", "Challenge 10: Take One   (extra, not graded)", "Quest10.cs", "CHALLENGE NOT STARTED", "TakeFromThree([potion, arrow, potion], \"arrow\")", "took arrow, 2 left", () => TakeFromThree(Three("potion", "arrow", "potion"), "arrow"));
 QuestRow(false, "Quest10", "Challenge 10: Take One   (extra, not graded)", "Quest10.cs", "CHALLENGE NOT STARTED", "TakeFromThree([potion, arrow, potion], \"shield\")", "no shield here", () => TakeFromThree(Three("potion", "arrow", "potion"), "shield"));
 QuestRow(false, "Quest10", "Challenge 10: Take One   (extra, not graded)", "Quest10.cs", "CHALLENGE NOT STARTED", "TakeFromThree([potion, arrow, potion], \"potion\"), then the list", "[arrow, potion]", () => ThreeAfterTake("potion", "arrow", "potion", "potion"));
 QuestRow(false, "Quest10", "Challenge 10: Take One   (extra, not graded)", "Quest10.cs", "CHALLENGE NOT STARTED", "TakeFromThree calls FindInThree this many times", "1", () => Calls("Quest10.cs", "TakeFromThree", "FindInThree").ToString());
 QuestRow(true, "Quest11", "Quest 11: Bars and Dots", "Quest11.cs", "QUEST NOT STARTED", "Stars(3)", "[***]", () => Stars(3));
 QuestRow(true, "Quest11", "Quest 11: Bars and Dots", "Quest11.cs", "QUEST NOT STARTED", "Stars(1)", "[*]", () => Stars(1));
-QuestRow(true, "Quest11", "Quest 11: Bars and Dots", "Quest11.cs", "QUEST NOT STARTED", "Stars(0)", "[]", () => Stars(0));
+QuestRow(true, "Quest11", "Quest 11: Bars and Dots", "Quest11.cs", "QUEST NOT STARTED", "Stars(0)", "[]", () => Stars(0), "Stars(3)", "[***]", () => Stars(3));
 QuestRow(true, "Quest11", "Quest 11: Bars and Dots", "Quest11.cs", "QUEST NOT STARTED", "Stars(10)", "[**********]", () => Stars(10));
 QuestRow(true, "Quest11", "Quest 11: Bars and Dots", "Quest11.cs", "QUEST NOT STARTED", "ManaDots(3, 6)", "ooo...", () => ManaDots(3, 6));
 QuestRow(true, "Quest11", "Quest 11: Bars and Dots", "Quest11.cs", "QUEST NOT STARTED", "ManaDots(0, 4)", "....", () => ManaDots(0, 4));
 QuestRow(true, "Quest11", "Quest 11: Bars and Dots", "Quest11.cs", "QUEST NOT STARTED", "ManaDots(4, 4)", "oooo", () => ManaDots(4, 4));
 QuestRow(true, "Quest11", "Quest 11: Bars and Dots", "Quest11.cs", "QUEST NOT STARTED", "ManaDots(1, 2)", "o.", () => ManaDots(1, 2));
+QuestRow(true, "Quest11", "Quest 11: Bars and Dots", "Quest11.cs", "QUEST NOT STARTED", "MyBar(5) is 5 characters longer than MyBar(0), and MyBar(0) has its two ends", "True", () => (MyBar(5).Length == MyBar(0).Length + 5 && MyBar(0).Length >= 2).ToString());
+QuestRow(true, "Quest11", "Quest 11: Bars and Dots", "Quest11.cs", "QUEST NOT STARTED", "MyBar(0), MyBar(1) and MyBar(4) are all different, and MyBar(3) is not [***]", "True", () => (YoursAllDifferent(new List<string> { MyBar(0), MyBar(1), MyBar(4) }) && MyBar(3) != "[***]").ToString());
+QuestRow(true, "Quest11", "Quest 11: Bars and Dots", "Quest11.cs", "QUEST NOT STARTED", "MyBar has a for loop in it", "True", () => (Calls("Quest11.cs", "MyBar", "for") >= 1).ToString());
 QuestRow(false, "Quest11", "Challenge 11: The Ruler   (extra, not graded)", "Quest11.cs", "CHALLENGE NOT STARTED", "Ruler(5)", "01234", () => Ruler(5));
 QuestRow(false, "Quest11", "Challenge 11: The Ruler   (extra, not graded)", "Quest11.cs", "CHALLENGE NOT STARTED", "Ruler(10)", "0123456789", () => Ruler(10));
 QuestRow(false, "Quest11", "Challenge 11: The Ruler   (extra, not graded)", "Quest11.cs", "CHALLENGE NOT STARTED", "Ruler(13)", "0123456789012", () => Ruler(13));
@@ -535,25 +605,30 @@ QuestRow(false, "Quest11", "Challenge 11: The Ruler   (extra, not graded)", "Que
 QuestRow(true, "Quest12", "Quest 12: Every Name", "Quest12.cs", "QUEST NOT STARTED", "JoinNames([Rook, Mote, Grub])", "Rook, Mote, Grub", () => JoinNames(Names()));
 QuestRow(true, "Quest12", "Quest 12: Every Name", "Quest12.cs", "QUEST NOT STARTED", "JoinNames([Rook])", "Rook", () => JoinNames(new List<string> { "Rook" }));
 QuestRow(true, "Quest12", "Quest 12: Every Name", "Quest12.cs", "QUEST NOT STARTED", "JoinNames([Rook, Mote])", "Rook, Mote", () => JoinNames(new List<string> { "Rook", "Mote" }));
-QuestRow(true, "Quest12", "Quest 12: Every Name", "Quest12.cs", "QUEST NOT STARTED", "JoinNames([])", "nobody", () => JoinNames(new List<string>()));
+QuestRow(true, "Quest12", "Quest 12: Every Name", "Quest12.cs", "QUEST NOT STARTED", "JoinNames([])", "nobody", () => JoinNames(new List<string>()), "JoinNames([Rook, Mote, Grub])", "Rook, Mote, Grub", () => JoinNames(Names()));
 QuestRow(true, "Quest12", "Quest 12: Every Name", "Quest12.cs", "QUEST NOT STARTED", "CountAlive([10, 0, 3])", "2", () => CountAlive(Health()).ToString());
-QuestRow(true, "Quest12", "Quest 12: Every Name", "Quest12.cs", "QUEST NOT STARTED", "CountAlive([0, 0])", "0", () => CountAlive(new List<int> { 0, 0 }).ToString());
+QuestRow(true, "Quest12", "Quest 12: Every Name", "Quest12.cs", "QUEST NOT STARTED", "CountAlive([0, 0])", "0", () => CountAlive(new List<int> { 0, 0 }).ToString(), "CountAlive([10, 0, 3])", "2", () => CountAlive(Health()).ToString());
 QuestRow(true, "Quest12", "Quest 12: Every Name", "Quest12.cs", "QUEST NOT STARTED", "CountAlive([5, 5, 5, 5])", "4", () => CountAlive(new List<int> { 5, 5, 5, 5 }).ToString());
-QuestRow(true, "Quest12", "Quest 12: Every Name", "Quest12.cs", "QUEST NOT STARTED", "CountAlive([])", "0", () => CountAlive(new List<int>()).ToString());
+QuestRow(true, "Quest12", "Quest 12: Every Name", "Quest12.cs", "QUEST NOT STARTED", "CountAlive([])", "0", () => CountAlive(new List<int>()).ToString(), "CountAlive([10, 0, 3])", "2", () => CountAlive(Health()).ToString());
+QuestRow(true, "Quest12", "Quest 12: Every Name", "Quest12.cs", "QUEST NOT STARTED", "MyStory() holds 3 to 6 lines", "True", () => YoursBetween(MyStory(), 3, 6).ToString());
+QuestRow(true, "Quest12", "Quest 12: Every Name", "Quest12.cs", "QUEST NOT STARTED", "no line of MyStory() is empty, and no two are the same", "True", () => YoursAllDifferent(MyStory()).ToString(), "JoinNames([Rook, Mote, Grub])", "Rook, Mote, Grub", () => JoinNames(Names()));
 QuestRow(false, "Quest12", "Challenge 12: The Last One   (extra, not graded)", "Quest12.cs", "CHALLENGE NOT STARTED", "FindLast([potion, arrow, potion, gold], \"potion\")", "2", () => FindLast(new List<string> { "potion", "arrow", "potion", "gold" }, "potion").ToString());
 QuestRow(false, "Quest12", "Challenge 12: The Last One   (extra, not graded)", "Quest12.cs", "CHALLENGE NOT STARTED", "FindLast([potion, arrow, potion, gold], \"gold\")", "3", () => FindLast(new List<string> { "potion", "arrow", "potion", "gold" }, "gold").ToString());
 QuestRow(false, "Quest12", "Challenge 12: The Last One   (extra, not graded)", "Quest12.cs", "CHALLENGE NOT STARTED", "FindLast([potion, arrow, potion, gold], \"shield\")", "-1", () => FindLast(new List<string> { "potion", "arrow", "potion", "gold" }, "shield").ToString());
 QuestRow(false, "Quest12", "Challenge 12: The Last One   (extra, not graded)", "Quest12.cs", "CHALLENGE NOT STARTED", "FindLast([], \"gold\")", "-1", () => FindLast(new List<string>(), "gold").ToString());
 QuestRow(true, "Quest13", "Quest 13: Totals and Records", "Quest13.cs", "QUEST NOT STARTED", "TotalAttack([4, 3, 5])", "12", () => TotalAttack(Attack()).ToString());
-QuestRow(true, "Quest13", "Quest 13: Totals and Records", "Quest13.cs", "QUEST NOT STARTED", "TotalAttack([])", "0", () => TotalAttack(new List<int>()).ToString());
+QuestRow(true, "Quest13", "Quest 13: Totals and Records", "Quest13.cs", "QUEST NOT STARTED", "TotalAttack([])", "0", () => TotalAttack(new List<int>()).ToString(), "TotalAttack([4, 3, 5])", "12", () => TotalAttack(Attack()).ToString());
 QuestRow(true, "Quest13", "Quest 13: Totals and Records", "Quest13.cs", "QUEST NOT STARTED", "WeakestIndex([10, 0, 3])", "1", () => WeakestIndex(Health()).ToString());
 QuestRow(true, "Quest13", "Quest 13: Totals and Records", "Quest13.cs", "QUEST NOT STARTED", "WeakestIndex([4, 9, 4])  (a tie goes to the first)", "0", () => WeakestIndex(new List<int> { 4, 9, 4 }).ToString());
 QuestRow(true, "Quest13", "Quest 13: Totals and Records", "Quest13.cs", "QUEST NOT STARTED", "WeakestIndex([9, 8, 7])", "2", () => WeakestIndex(new List<int> { 9, 8, 7 }).ToString());
-QuestRow(true, "Quest13", "Quest 13: Totals and Records", "Quest13.cs", "QUEST NOT STARTED", "WeakestIndex([])", "-1", () => WeakestIndex(new List<int>()).ToString());
+QuestRow(true, "Quest13", "Quest 13: Totals and Records", "Quest13.cs", "QUEST NOT STARTED", "WeakestIndex([])", "-1", () => WeakestIndex(new List<int>()).ToString(), "WeakestIndex([10, 0, 3])", "1", () => WeakestIndex(Health()).ToString());
 QuestRow(true, "Quest13", "Quest 13: Totals and Records", "Quest13.cs", "QUEST NOT STARTED", "AllAlive([10, 0, 3])", "False", () => AllAlive(Health()).ToString(), "AllAlive([10, 7, 8])", "True", () => AllAlive(new List<int> { 10, 7, 8 }).ToString());
-QuestRow(true, "Quest13", "Quest 13: Totals and Records", "Quest13.cs", "QUEST NOT STARTED", "AllAlive([10, 7, 8])", "True", () => AllAlive(new List<int> { 10, 7, 8 }).ToString());
+QuestRow(true, "Quest13", "Quest 13: Totals and Records", "Quest13.cs", "QUEST NOT STARTED", "AllAlive([10, 7, 8])", "True", () => AllAlive(new List<int> { 10, 7, 8 }).ToString(), "AllAlive([10, 0, 3])", "False", () => AllAlive(Health()).ToString());
 QuestRow(true, "Quest13", "Quest 13: Totals and Records", "Quest13.cs", "QUEST NOT STARTED", "AllAlive([10, 7, 0])  (the last one)", "False", () => AllAlive(new List<int> { 10, 7, 0 }).ToString(), "AllAlive([10, 7, 8])", "True", () => AllAlive(new List<int> { 10, 7, 8 }).ToString());
-QuestRow(true, "Quest13", "Quest 13: Totals and Records", "Quest13.cs", "QUEST NOT STARTED", "AllAlive([])", "True", () => AllAlive(new List<int>()).ToString());
+QuestRow(true, "Quest13", "Quest 13: Totals and Records", "Quest13.cs", "QUEST NOT STARTED", "AllAlive([])", "True", () => AllAlive(new List<int>()).ToString(), "AllAlive([10, 0, 3])", "False", () => AllAlive(Health()).ToString());
+QuestRow(true, "Quest13", "Quest 13: Totals and Records", "Quest13.cs", "QUEST NOT STARTED", "MyRallyCry(7) has 7 in it, and MyRallyCry(12) has 12", "True", () => YoursCry(1).ToString());
+QuestRow(true, "Quest13", "Quest 13: Totals and Records", "Quest13.cs", "QUEST NOT STARTED", "MyRallyCry(6) and MyRallyCry(14) say different things, apart from the number", "True", () => YoursCry(2).ToString());
+QuestRow(true, "Quest13", "Quest 13: Totals and Records", "Quest13.cs", "QUEST NOT STARTED", "MyRallyCry(9) says what MyRallyCry(6) says, and MyRallyCry(10) what MyRallyCry(14) says, apart from the number", "True", () => YoursCry(3).ToString(), "MyRallyCry(7) has 7 in it, and MyRallyCry(12) has 12", "True", () => YoursCry(1).ToString());
 QuestRow(false, "Quest13", "Challenge 13: Who Needs the Potion   (extra, not graded)", "Quest13.cs", "CHALLENGE NOT STARTED", "WeakestAliveIndex([10, 0, 3])", "2", () => WeakestAliveIndex(Health()).ToString());
 QuestRow(false, "Quest13", "Challenge 13: Who Needs the Potion   (extra, not graded)", "Quest13.cs", "CHALLENGE NOT STARTED", "WeakestAliveIndex([0, 7, 2, 0])", "2", () => WeakestAliveIndex(new List<int> { 0, 7, 2, 0 }).ToString());
 QuestRow(false, "Quest13", "Challenge 13: Who Needs the Potion   (extra, not graded)", "Quest13.cs", "CHALLENGE NOT STARTED", "WeakestAliveIndex([5, 5])", "0", () => WeakestAliveIndex(new List<int> { 5, 5 }).ToString());
@@ -562,11 +637,14 @@ QuestRow(false, "Quest13", "Challenge 13: Who Needs the Potion   (extra, not gra
 QuestRow(true, "Quest14", "Quest 14: Rows and Columns", "Quest14.cs", "QUEST NOT STARTED", "CountInColumn(room, 0, '#')", "4", () => CountInColumn(room, 0, '#').ToString());
 QuestRow(true, "Quest14", "Quest 14: Rows and Columns", "Quest14.cs", "QUEST NOT STARTED", "CountInColumn(room, 1, '#')", "2", () => CountInColumn(room, 1, '#').ToString());
 QuestRow(true, "Quest14", "Quest 14: Rows and Columns", "Quest14.cs", "QUEST NOT STARTED", "CountInColumn(room, 2, '.')", "2", () => CountInColumn(room, 2, '.').ToString());
-QuestRow(true, "Quest14", "Quest 14: Rows and Columns", "Quest14.cs", "QUEST NOT STARTED", "CountInColumn(room, 3, 'M')", "0", () => CountInColumn(room, 3, 'M').ToString());
+QuestRow(true, "Quest14", "Quest 14: Rows and Columns", "Quest14.cs", "QUEST NOT STARTED", "CountInColumn(room, 3, 'M')", "0", () => CountInColumn(room, 3, 'M').ToString(), "CountInColumn(room, 2, '.')", "2", () => CountInColumn(room, 2, '.').ToString());
 QuestRow(true, "Quest14", "Quest 14: Rows and Columns", "Quest14.cs", "QUEST NOT STARTED", "CountEither(room, '$', '+')", "2", () => CountEither(room, '$', '+').ToString());
 QuestRow(true, "Quest14", "Quest 14: Rows and Columns", "Quest14.cs", "QUEST NOT STARTED", "CountEither(room, '@', 'M')", "2", () => CountEither(room, '@', 'M').ToString());
 QuestRow(true, "Quest14", "Quest 14: Rows and Columns", "Quest14.cs", "QUEST NOT STARTED", "CountEither(room, '#', '#')  (each wall once)", "14", () => CountEither(room, '#', '#').ToString());
 QuestRow(true, "Quest14", "Quest 14: Rows and Columns", "Quest14.cs", "QUEST NOT STARTED", "CountEither(hall, 'M', '.')", "6", () => CountEither(hall, 'M', '.').ToString());
+QuestRow(true, "Quest14", "Quest 14: Rows and Columns", "Quest14.cs", "QUEST NOT STARTED", "MyRoom() is at least 8 wide and 5 tall, every row the same length", "True", () => YoursRoom(1).ToString());
+QuestRow(true, "Quest14", "Quest 14: Rows and Columns", "Quest14.cs", "QUEST NOT STARTED", "MyRoom() has walls all round, one @, at least one +, M and $, and no other tiles", "True", () => YoursRoom(2).ToString());
+QuestRow(true, "Quest14", "Quest 14: Rows and Columns", "Quest14.cs", "QUEST NOT STARTED", "the + in MyRoom() can be reached on foot from the @", "True", () => YoursRoom(3).ToString());
 QuestRow(false, "Quest14", "Challenge 14: The Richest Row   (extra, not graded)", "Quest14.cs", "CHALLENGE NOT STARTED", "RichestRow(room)", "1", () => RichestRow(room).ToString());
 QuestRow(false, "Quest14", "Challenge 14: The Richest Row   (extra, not graded)", "Quest14.cs", "CHALLENGE NOT STARTED", "RichestRow(hall)  (no loot at all)", "-1", () => RichestRow(hall).ToString());
 QuestRow(false, "Quest14", "Challenge 14: The Richest Row   (extra, not graded)", "Quest14.cs", "CHALLENGE NOT STARTED", "RichestRow([#$#, #$$, $$#])  (a tie goes to the first)", "1", () => RichestRow(new List<string> { "#$#", "#$$", "$$#" }).ToString());
@@ -574,17 +652,22 @@ QuestRow(true, "Quest15", "Quest 15: Wide Screen", "Quest15.cs", "QUEST NOT STAR
 QuestRow(true, "Quest15", "Quest 15: Wide Screen", "Quest15.cs", "QUEST NOT STARTED", "DrawWide(room, 2, 1)  (the player has stepped right)", "########## / ##..@@$$## / ##MM..++## / ##########", () => Printed(() => DrawWide(room, 2, 1)));
 QuestRow(true, "Quest15", "Quest 15: Wide Screen", "Quest15.cs", "QUEST NOT STARTED", "DrawWide(room, 2, 2)", "########## / ##....$$## / ##MM@@++## / ##########", () => Printed(() => DrawWide(room, 2, 2)));
 QuestRow(true, "Quest15", "Quest 15: Wide Screen", "Quest15.cs", "QUEST NOT STARTED", "DrawWide(hall, 1, 1)", "################## / ##@@......MM..MM## / ##################", () => Printed(() => DrawWide(hall, 1, 1)));
+QuestRow(true, "Quest15", "Quest 15: Wide Screen", "Quest15.cs", "QUEST NOT STARTED", "WideTile gives 2 characters for each of # . M $ + @, and NN for N and ** for *", "True", () => YoursWide(1).ToString());
+QuestRow(true, "Quest15", "Quest 15: Wide Screen", "Quest15.cs", "QUEST NOT STARTED", "WideTile gives six different looks for # . M $ + @, and # and . are not ## and ..", "True", () => YoursWide(2).ToString());
 QuestRow(false, "Quest15", "Challenge 15: Fog   (extra, not graded)", "Quest15.cs", "CHALLENGE NOT STARTED", "DrawFog(room, 1, 1) prints, line by line", "###?? / #@.$? / #M.?? / ?#???", () => Printed(() => DrawFog(room, 1, 1)));
 QuestRow(false, "Quest15", "Challenge 15: Fog   (extra, not graded)", "Quest15.cs", "CHALLENGE NOT STARTED", "DrawFog(hall, 3, 1)", "??###???? / ?..@.M??? / ??###????", () => Printed(() => DrawFog(hall, 3, 1)));
 QuestRow(true, "Quest16", "Quest 16: The Walk", "Quest16.cs", "QUEST NOT STARTED", "WalkX([d, d, s, a], 1)", "2", () => WalkX(Walk("d d s a"), 1).ToString());
 QuestRow(true, "Quest16", "Quest 16: The Walk", "Quest16.cs", "QUEST NOT STARTED", "WalkY([d, d, s, a], 1)", "2", () => WalkY(Walk("d d s a"), 1).ToString());
 QuestRow(true, "Quest16", "Quest 16: The Walk", "Quest16.cs", "QUEST NOT STARTED", "WalkX([a, a, help, w], 5)", "3", () => WalkX(Walk("a a help w"), 5).ToString());
 QuestRow(true, "Quest16", "Quest 16: The Walk", "Quest16.cs", "QUEST NOT STARTED", "WalkY([a, a, help, w], 5)", "4", () => WalkY(Walk("a a help w"), 5).ToString());
-QuestRow(true, "Quest16", "Quest 16: The Walk", "Quest16.cs", "QUEST NOT STARTED", "WalkX([], 7)", "7", () => WalkX(new List<string>(), 7).ToString());
+QuestRow(true, "Quest16", "Quest 16: The Walk", "Quest16.cs", "QUEST NOT STARTED", "WalkX([], 7)", "7", () => WalkX(new List<string>(), 7).ToString(), "WalkX([d, d, s, a], 1)", "2", () => WalkX(Walk("d d s a"), 1).ToString());
 QuestRow(true, "Quest16", "Quest 16: The Walk", "Quest16.cs", "QUEST NOT STARTED", "KeepPlaying(\"d\", true, false)", "True", () => KeepPlaying("d", true, false).ToString());
 QuestRow(true, "Quest16", "Quest 16: The Walk", "Quest16.cs", "QUEST NOT STARTED", "KeepPlaying(\"quit\", true, false)", "False", () => KeepPlaying("quit", true, false).ToString(), "KeepPlaying(\"d\", true, false)", "True", () => KeepPlaying("d", true, false).ToString());
 QuestRow(true, "Quest16", "Quest 16: The Walk", "Quest16.cs", "QUEST NOT STARTED", "KeepPlaying(\"d\", false, false)", "False", () => KeepPlaying("d", false, false).ToString(), "KeepPlaying(\"d\", true, false)", "True", () => KeepPlaying("d", true, false).ToString());
 QuestRow(true, "Quest16", "Quest 16: The Walk", "Quest16.cs", "QUEST NOT STARTED", "KeepPlaying(\"d\", true, true)", "False", () => KeepPlaying("d", true, true).ToString(), "KeepPlaying(\"d\", true, false)", "True", () => KeepPlaying("d", true, false).ToString());
+QuestRow(true, "Quest16", "Quest 16: The Walk", "Quest16.cs", "QUEST NOT STARTED", "MyEnding(true, 40), MyEnding(true, 250) and MyEnding(false, 40) are three different endings, apart from the number", "True", () => YoursEnding(1).ToString());
+QuestRow(true, "Quest16", "Quest 16: The Walk", "Quest16.cs", "QUEST NOT STARTED", "MyEnding(true, 99) is the fast ending and MyEnding(true, 100) the slow one", "True", () => YoursEnding(2).ToString());
+QuestRow(true, "Quest16", "Quest 16: The Walk", "Quest16.cs", "QUEST NOT STARTED", "every ending has its number of turns in it: 40, 250 and 77", "True", () => YoursEnding(3).ToString());
 QuestRow(false, "Quest16", "Challenge 16: The Walk, With Walls   (extra, not graded)", "Quest16.cs", "CHALLENGE NOT STARTED", "WalkReport(room, [d, d, d])", "ends at 3,1 after 2 steps and 1 bumps", () => WalkReport(room, Walk("d d d")));
 QuestRow(false, "Quest16", "Challenge 16: The Walk, With Walls   (extra, not graded)", "Quest16.cs", "CHALLENGE NOT STARTED", "WalkReport(room, [w, a, s, help, d])", "ends at 2,2 after 2 steps and 2 bumps", () => WalkReport(room, Walk("w a s help d")));
 QuestRow(false, "Quest16", "Challenge 16: The Walk, With Walls   (extra, not graded)", "Quest16.cs", "CHALLENGE NOT STARTED", "WalkReport(hall, [])", "ends at 1,1 after 0 steps and 0 bumps", () => WalkReport(hall, new List<string>()));

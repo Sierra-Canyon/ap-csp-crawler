@@ -1,6 +1,6 @@
 # Milestone 1: your character
 
-**Built Monday 10/12 · due Thursday 10/15, end of class · 20 points**
+**Built Monday 10/12 · due end of class Thursday 10/15 · 20 points**
 
 Two functions in one file, `dungeon/MyCharacter.cs`.
 
@@ -24,7 +24,7 @@ bool IsFairCharacter(int hp, int atk)
 ```
 
 Right now it returns `true` for everything. Replace the body so it answers the question.
-Two parameters in, one `bool` out. **The order of the parameters matters**:
+Use an `if` and an `else`, with a `return` in each. Two parameters in, one `bool` out. **The order of the parameters matters**:
 `IsFairCharacter(10, 4)` and `IsFairCharacter(4, 10)` are different questions.
 
 | Call | Should return | Because |
@@ -42,8 +42,15 @@ Put the health and attack in two `int` variables. Then:
 - **if** your character is fair, call `AddCharacter` with your name and your numbers
 - **else** call `AddCharacter` with your name, `5` and `2`
 
+In the `else`, before `AddCharacter`, add one `Console.WriteLine` in your character's own voice that
+explains the weaker stats, for example `Console.WriteLine("Juniper trades her strength for a way in.");`.
+It prints when the game starts, if your stats are not fair.
+
 `AddCharacter` has six parameters. Read its signature in `dungeon/README.txt` before you
 call it. Pass the three lists straight through, in the same order.
+
+Then open `CREDITS.md` at the top of the repository. After **Game by:**, replace `(your name)` with
+your name.
 
 ## 3. Check it
 
@@ -73,15 +80,16 @@ git commit
 feat: Add my character
 ```
 
-Then `git push`. On **github.com**, in this repository: **Pull requests** → **New pull request** →
+Then `git push`. Open the pull request on Monday if there is time, or at the start of class on
+Thursday. On **github.com**, in this repository: **Pull requests** → **New pull request** →
 base **`main`** ← compare **`milestone-1`** → **Create pull request**. Fill in the template. In the
-right-hand sidebar click the gear beside **Reviewers** and choose `jd12`. **Leave it open today.**
-Every push you make until Thursday appears in it. On Thursday, when the milestone is due and the
-self-check below is ticked, **Merge pull request** and **Confirm merge**, the way you merged
-`crawler` on Day 7. Then, in the terminal, start the branch for the lists unit:
+right-hand sidebar click the gear beside **Reviewers** and choose `jd12`. Every push you make after
+that appears in it. On Thursday, when the self-check below is ticked, **Merge pull request** and
+**Confirm merge**, the way you merged `crawler` on Day 7. Then, in the terminal, start the branch for
+the lists unit:
 
 ```
-git checkout main
+git switch main
 git pull
 git switch -c lists
 git push -u origin lists
@@ -92,11 +100,14 @@ The same pull request and the same four lines in your log repository, so both ar
 ### Spec self-check, to copy into the pull request
 
 ```
+- [ ] IsFairCharacter has an if and an else, with a return in each
 - [ ] IsFairCharacter returns true at a cost of 18 and false at 19
 - [ ] MyCharacter uses if / else and calls IsFairCharacter
+- [ ] The else prints one line in my character's voice before AddCharacter
 - [ ] My character has my own name, not Hero
 - [ ] The self-check says 0 failed and has no TO DO Milestone 1 line
-- [ ] My name is in CREDITS.md
+- [ ] My name is in CREDITS.md, after Game by:
+- [ ] The pull request has jd12 as reviewer, and I merged it on Thursday 10/15
 ```
 
 ## The three questions for today's log

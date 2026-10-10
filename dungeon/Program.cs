@@ -58,16 +58,23 @@ int turns = 0;
 bool needLevel = true;
 int questSteps = 0;            // Quest 5's challenge keeps its count here
 
+// Yours: what you made in the quests, carried through the whole game. QuestBoard.cs fills them in.
+List<string> trophies = new List<string>();     // Quest 8
+List<string> bookNames = new List<string>();    // Quest 9: your monster book, two parallel lists
+List<int> bookHealth = new List<int>();
+List<string> settings = new List<string>();     // things a quest switched on, such as "wide"
+
 PrintTitle();
 PrintControls();
-QuestsAtStart();
+QuestsAtStart(names, health, attack, trophies, bookNames, bookHealth, settings);
+levelNumber = QuestsFirstLevel(levelNumber);    // 0 is your room from Quest 14, when it is ready
 
 bool playing = true;
 while (playing)
 {
     if (needLevel)
     {
-        level = LoadLevel(levelNumber);
+        level = QuestsLoadLevel(levelNumber);
         playing = CheckLevel(level);
         SpawnMonsters(level, levelNumber, mNames, mHealth, mAttack, mX, mY);
         LoadDialogue(levelNumber, says, choiceA, nextA, choiceB, nextB, gives);
@@ -79,6 +86,7 @@ while (playing)
         playerY = FindTileY(level, '@');
         mana = maxMana;
         PrintLevelBanner(levelNumber);
+        QuestsOnLevel(levelNumber, level, names, health, attack, leader, mNames, mHealth, bookNames, bookHealth);
         needLevel = false;
     }
     else if (talkLine != -1)
@@ -111,14 +119,14 @@ while (playing)
     }
     else
     {
-        DrawLevel(level, playerX, playerY);
+        QuestsDraw(level, playerX, playerY, settings);
         PrintParty(names, health, maxHp);
-        Console.WriteLine(ManaBar(mana, maxMana));
+        Console.WriteLine(QuestsManaLine(mana, maxMana));
         if (IsDoorSealed(mHealth, boss)) Console.WriteLine(BossBar(mNames[boss], mHealth[boss], bossMaxHp));
         PrintInventory(inventory);
         PrintPowerups(powerNames, powerTurns);
         Console.WriteLine("Leader: " + names[leader] + "   Party of " + PartySize(names) + "   Total health: " + TotalHealth(health));
-        QuestsOnHud(names, health, leader, inventory);
+        QuestsOnHud(names, health, leader, inventory, level, trophies);
 
         string command = ReadCommand();
         questSteps = CountStep(questSteps, command);
@@ -142,7 +150,7 @@ while (playing)
         }
         else if (command == "quests")
         {
-            PrintQuestBoard(names, health, attack, leader, maxHp, inventory, mana, maxMana, level, playerX, playerY, levelNumber, questSteps);
+            PrintQuestBoard(names, health, attack, leader, maxHp, inventory, mana, maxMana, level, playerX, playerY, levelNumber, questSteps, trophies, bookNames, bookHealth, settings);
         }
         else if (command == "spells")
         {
@@ -159,6 +167,7 @@ while (playing)
         else if (verb == "lead")
         {
             leader = ChooseLeader(names, health, leader, RestOfWords(command));
+            QuestsOnLead(names, health, attack, leader);
         }
         else if (verb == "fire")
         {
@@ -173,6 +182,10 @@ while (playing)
             int cost = CastSpell(SecondWord(command), spellNames, spellCosts, mana, level, names, health, attack, leader, maxHp, mNames, mHealth, mX, mY, playerX, playerY, StepX(ThirdWord(command)), StepY(ThirdWord(command)));
             mana = mana - cost;
             tookTurn = cost > 0;
+        }
+        else if (QuestsCommand(command, names, health, attack, leader, inventory, trophies, bookNames, bookHealth, settings))
+        {
+            // a command one of your quests added: QuestBoard.cs has answered it
         }
         else if (newX == playerX && newY == playerY)
         {
@@ -228,6 +241,7 @@ while (playing)
                 if (levelNumber > LevelCount())
                 {
                     PrintWin(CountItem(inventory, "gold"));
+                    QuestsAtEnd(true, turns, names, health);
                     playing = false;
                 }
             }
@@ -238,6 +252,7 @@ while (playing)
         {
             turns = turns + 1;
             mana = ManaAfterTurn(mana, maxMana, turns);
+            QuestsOnDefeat(level, mNames, mHealth, mX, mY, trophies);
             ClearDefeated(level, mNames, mHealth, mX, mY, inventory);
             if (boss != -1 && !IsAlive(mHealth[boss]) && !HasFlag(flags, "boss down " + levelNumber))
             {
@@ -268,6 +283,7 @@ while (playing)
             if (!AnyAlive(health))
             {
                 PrintGameOver();
+                QuestsAtEnd(false, turns, names, health);
                 playing = false;
             }
         }

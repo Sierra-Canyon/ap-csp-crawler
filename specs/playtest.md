@@ -13,7 +13,7 @@ If it does not, commit first.
 
 Your partner sends you **one file**: their `dungeon/MyLevel.cs`. AirDrop it. Save it over your own
 `dungeon/MyLevel.cs`. If their level has its own look, they also send the files in their
-`assets` folder that end in `4`.
+`assets` folder that end in `4`. No AirDrop? Swap seats and play on their laptop.
 
 ## 2. The contract check (5 minutes)
 
@@ -32,7 +32,14 @@ cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon-graphics
 dotnet run -- 4
 ```
 
-Play to the door. Then play it once more in the text game, where you can see the whole map.
+Play to the door. Then play it once more in the text game, where you can see the whole map. In
+`dungeon/Program.cs`, change `int levelNumber = 1;` to `int levelNumber = 4;`. Setting it to 4 also
+skips your own room from Quest 14. Then:
+
+```
+cd ~/version_control/apcsp-2026-2027-crawler-<your-username>/dungeon
+dotnet run
+```
 
 ## 4. Write the report (10 minutes)
 
@@ -43,12 +50,13 @@ be skipped by going under the wall, so the loot behind it is free."
 
 ```
 cd ~/version_control/apcsp-2026-2027-crawler-<your-username>
-git restore dungeon/MyLevel.cs
+git restore dungeon/MyLevel.cs dungeon/Program.cs assets
 git status
 ```
 
-`git status` should show only `playtest/PLAYTEST.md` as changed. Delete any `4` files of theirs
-from `assets` that you do not want to keep. Then:
+`git restore` puts back your level, your `levelNumber = 1;` and your own art. If `git status` lists
+any of their files under **Untracked files**, delete each one, in Finder or with `rm` and the path it
+shows. Run `git status` again. It should show only `playtest/PLAYTEST.md` as changed. Then:
 
 ```
 git add playtest/PLAYTEST.md
@@ -63,4 +71,4 @@ tomorrow's class to act on it.
 
 1. Did your partner's level load in your game without any change to your code, and what made that possible?
 2. What did you notice about your own level only after watching someone else's?
-3. If the class had invented a seventh tile halfway through, what would have happened today?
+3. If the class had invented a tenth tile halfway through, what would have happened today?

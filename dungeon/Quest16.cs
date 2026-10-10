@@ -22,6 +22,14 @@ bool KeepPlaying(string command, bool anyAlive, bool escaped)
 }
 
 // ----------------------------------------------------------------------
+//  Yours: Your Ending.   Part of Quest 16, graded. Your own ideas go here.
+// ----------------------------------------------------------------------
+string MyEnding(bool won, int turns)
+{
+    return "";     // QUEST 16, YOURS: replace this line
+}
+
+// ----------------------------------------------------------------------
 //  Challenge 16: The Walk, With Walls.   Extra. Not graded.
 //  CHALLENGE NOT STARTED  <- delete this whole line when you begin the challenge
 // ----------------------------------------------------------------------

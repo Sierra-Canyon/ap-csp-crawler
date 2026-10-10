@@ -17,6 +17,16 @@ int CountAlive(List<int> health)
 }
 
 // ----------------------------------------------------------------------
+//  Yours: Your Story.   Part of Quest 12, graded. Your own ideas go here.
+// ----------------------------------------------------------------------
+List<string> MyStory()
+{
+    List<string> story = new List<string>();
+    // YOURS: three to six Add lines go here, one sentence each
+    return story;
+}
+
+// ----------------------------------------------------------------------
 //  Challenge 12: The Last One.   Extra. Not graded.
 //  CHALLENGE NOT STARTED  <- delete this whole line when you begin the challenge
 // ----------------------------------------------------------------------

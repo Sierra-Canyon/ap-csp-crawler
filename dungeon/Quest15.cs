@@ -12,6 +12,14 @@ void DrawWide(List<string> level, int playerX, int playerY)
 }
 
 // ----------------------------------------------------------------------
+//  Yours: Your Tiles.   Part of Quest 15, graded. Your own ideas go here.
+// ----------------------------------------------------------------------
+string WideTile(char tile)
+{
+    return "";     // QUEST 15, YOURS: replace this line
+}
+
+// ----------------------------------------------------------------------
 //  Challenge 15: Fog.   Extra. Not graded.
 //  CHALLENGE NOT STARTED  <- delete this whole line when you begin the challenge
 // ----------------------------------------------------------------------

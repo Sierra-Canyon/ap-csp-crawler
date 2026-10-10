@@ -22,6 +22,14 @@ bool AllAlive(List<int> health)
 }
 
 // ----------------------------------------------------------------------
+//  Yours: Your Rally Cry.   Part of Quest 13, graded. Your own ideas go here.
+// ----------------------------------------------------------------------
+string MyRallyCry(int totalAttack)
+{
+    return "";     // QUEST 13, YOURS: replace this line
+}
+
+// ----------------------------------------------------------------------
 //  Challenge 13: Who Needs the Potion.   Extra. Not graded.
 //  CHALLENGE NOT STARTED  <- delete this whole line when you begin the challenge
 // ----------------------------------------------------------------------

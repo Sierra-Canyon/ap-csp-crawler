@@ -42,6 +42,11 @@ List<string> choiceB = new List<string>();
 List<int> nextB = new List<int>();
 List<string> gives = new List<string>();
 List<string> flags = new List<string>();
+// Yours: what the students made in the quests (QuestBoard.cs fills these in, as in Program.cs).
+List<string> trophies = new List<string>();
+List<string> bookNames = new List<string>();
+List<int> bookHealth = new List<int>();
+List<string> settings = new List<string>();
 List<string> level = new List<string>();
 List<string> oldLevel = new List<string>();
 
@@ -86,7 +91,7 @@ int GfxTileFor(List<string> lvl)
 
 void GfxStartLevel()
 {
-    level = LoadLevel(levelNumber);
+    level = QuestsLoadLevel(levelNumber);
     Engine.Tile = GfxTileFor(level);
     Engine.CurrentLevel = levelNumber;
     levelIsBroken = !CheckLevel(level);
@@ -105,6 +110,9 @@ void GfxStartLevel()
     fromX = playerX;
     fromY = playerY;
     PrintLevelBanner(levelNumber);
+    QuestsOnLevel(levelNumber, level, names, health, attack, leader, mNames, mHealth, bookNames, bookHealth);
+    mMaxHealth.Clear();
+    for (int i = 0; i < mHealth.Count; i++) mMaxHealth.Add(mHealth[i]);
     Engine.PlayMusic(levelNumber);
 }
 
@@ -120,7 +128,9 @@ void GfxNewGame()
     leader = StrongestIndex(attack);
     MakeStartingInventory(inventory);
     partyDefense = 0;
-    levelNumber = firstLevel;
+    trophies.Clear(); bookNames.Clear(); bookHealth.Clear(); settings.Clear();
+    QuestsAtStart(names, health, attack, trophies, bookNames, bookHealth, settings);
+    levelNumber = QuestsFirstLevel(firstLevel);
     facing = 0;
     GfxStartLevel();
 }
@@ -187,6 +197,7 @@ void GfxEndTurn()
     mana = ManaAfterTurn(mana, maxMana, turns);
 
     int onMap = CountTiles(level, 'M') + CountTiles(level, 'B');
+    QuestsOnDefeat(level, mNames, mHealth, mX, mY, trophies);
     ClearDefeated(level, mNames, mHealth, mX, mY, inventory);
     if (CountTiles(level, 'M') + CountTiles(level, 'B') < onMap) Engine.Sfx("defeat");
     if (boss != -1 && !IsAlive(mHealth[boss]) && !HasFlag(flags, "boss down " + levelNumber))
@@ -230,6 +241,7 @@ void GfxEndTurn()
     if (!AnyAlive(health))
     {
         PrintGameOver();
+        QuestsAtEnd(false, turns, names, health);
         Engine.Sfx("lose");
         mode = "lost";
         timer = 0;
@@ -413,6 +425,7 @@ while (Engine.Running())
                 if (levelNumber >= LevelCount())
                 {
                     PrintWin(CountItem(inventory, "gold"));
+                    QuestsAtEnd(true, turns, names, health);
                     Engine.Sfx("win");
                     mode = "won";
                 }

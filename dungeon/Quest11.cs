@@ -17,6 +17,14 @@ string ManaDots(int mana, int maxMana)
 }
 
 // ----------------------------------------------------------------------
+//  Yours: Your Bar.   Part of Quest 11, graded. Your own ideas go here.
+// ----------------------------------------------------------------------
+string MyBar(int n)
+{
+    return "";     // QUEST 11, YOURS: replace this line
+}
+
+// ----------------------------------------------------------------------
 //  Challenge 11: The Ruler.   Extra. Not graded.
 //  CHALLENGE NOT STARTED  <- delete this whole line when you begin the challenge
 // ----------------------------------------------------------------------
