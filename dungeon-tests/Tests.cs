@@ -679,6 +679,33 @@ if (questRows + challengeRows > 0)
 }
 // </quests>
 
+// ---------------------------------------------------------------- Milestone 2: your feature, MyFeature.cs
+// These check the shape of what you write, never your words.   dotnet run MyFeature
+List<string> Loot3() { return new List<string> { "gold", "arrow", "gold" }; }
+bool InProgram(string function) { return System.Text.RegularExpressions.Regex.IsMatch(CodeOnly(QuestSource("Program.cs")), @"(?<![\w\.])" + function + @"\s*\("); }
+bool GoodWord(string w)
+{
+    List<string> taken = new List<string> { "quit", "help", "quests", "spells", "export", "potion", "lead", "fire", "throw", "cast", "trophies", "riddle", "wide", "art", "w", "a", "s", "d" };
+    return w != "" && w == w.Trim().ToLower() && !w.Contains(' ') && !taken.Contains(w);
+}
+string Recorded(params string[] whats) { List<string> e = new List<string>(); for (int i = 0; i < whats.Length; i++) MyRecord(e, whats[i]); return ShowS(e); }
+Todo("MyFeatureWord", "Milestone 2, Thu: MyFeatureWord() is one lowercase word that the game does not already use", "True", Try(() => GoodWord(MyFeatureWord()).ToString()));
+Todo("MyFeatureTitle", "Milestone 2, Thu: MyFeatureTitle() is not empty", "True", Try(() => (MyFeatureTitle().Trim() != "").ToString()));
+Todo("MyFeature Program", "Milestone 2, Thu: Program.cs calls MyFeatureWord() and MyFeatureTitle()", "True", (InProgram("MyFeatureWord") && InProgram("MyFeatureTitle")).ToString());
+Todo("MyFeature MyRecord", "Milestone 2, Mon: MyRecord(entries, \"gold\") on an empty list", "[gold]", Try(() => Recorded("gold")));
+Todo("MyFeature MyRecord", "Milestone 2, Mon: MyRecord with \"gold\", then \"bat\", then \"gold\"", "[gold, bat, gold]", Try(() => Recorded("gold", "bat", "gold")));
+Todo("MyFeature MyRecord", "Milestone 2, Mon: MyRecord with \"gold\", then \"\" (an empty what adds nothing)", "[gold]", Try(() => Recorded("gold", "")));
+Todo("MyFeature Program", "Milestone 2, Mon: Program.cs calls MyRecord", "True", InProgram("MyRecord").ToString());
+Todo("MyFeature MyCount", "Milestone 2, Tue: MyCount([gold, arrow, gold], \"gold\")", "2", Try(() => MyCount(Loot3(), "gold").ToString()));
+Todo("MyFeature MyCount", "Milestone 2, Tue: MyCount([gold, arrow, gold], \"sword\")", "0", Try(() => MyCount(Loot3(), "sword").ToString()));
+Todo("MyFeature MyCount", "Milestone 2, Tue: MyCount([], \"gold\")", "0", Try(() => MyCount(new List<string>(), "gold").ToString()));
+Todo("MyFeature Program", "Milestone 2, Tue: Program.cs calls MyCount (from Wednesday, MyReport may call it instead)", "True", (InProgram("MyCount") || Calls("MyFeature.cs", "MyReport", "MyCount") >= 1).ToString());
+Todo("MyFeature MyReport", "Milestone 2, Wed: MyReport([gold, arrow, gold], \"\") shows gold and arrow", "True", Try(() => { string r = MyReport(Loot3(), ""); return (r.Contains("gold") && r.Contains("arrow")).ToString(); }));
+Todo("MyFeature MyReport", "Milestone 2, Wed: MyReport([gold, arrow, gold], \"arrow\") shows arrow and not gold", "True", Try(() => { string r = MyReport(Loot3(), "arrow"); return (r.Contains("arrow") && !r.Contains("gold")).ToString(); }));
+Todo("MyFeature MyReport", "Milestone 2, Wed: MyReport([], \"\") says something", "True", Try(() => (MyReport(new List<string>(), "").Trim() != "").ToString()));
+Todo("MyFeature MyReport", "Milestone 2, Wed: MyReport has a for loop and an if inside it", "True", (Calls("MyFeature.cs", "MyReport", "for") >= 1 && Calls("MyFeature.cs", "MyReport", "if") >= 1).ToString());
+Todo("MyFeature Program", "Milestone 2, Wed: Program.cs calls MyReport", "True", InProgram("MyReport").ToString());
+
 // The milestone summary. A run filtered to a quest (dotnet run Quest03) matched no milestone row, so it says nothing here.
 if (passed + failed + todo > 0 || questRows + challengeRows == 0)
 {
