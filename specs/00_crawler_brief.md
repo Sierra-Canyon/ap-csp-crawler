@@ -2,8 +2,8 @@
 
 **AP Computer Science Principles · Period D · handed out Monday 10/12**
 
-Between now and **Wednesday 12/2** you add your character, rewrite eight of the game's
-functions, and design a level that works in anyone's game.
+Between now and **Wednesday 12/2** you add your character, add a feature of your own to the
+game, and design a level that works in anyone's game.
 
 ## The rule
 
@@ -16,7 +16,7 @@ No `class`, no arrays, no `foreach`, no `switch`, no `var`, no `while` (the game
 | | What | Built in class | Due | Points |
 |---|---|---|---|---|
 | **Milestone 1** | **Your character.** `IsFairCharacter` and `MyCharacter`, on the branch `milestone-1`, merged with a pull request. | Mon 10/12 | **Thu 10/15, end of class** | 20 |
-| **Milestone 2** | **Eight rewrites.** Two functions a day for four days, each one deleted and written again by you. | Thu 11/12, Mon 11/16, Tue 11/17, Wed 11/18 | **Fri 11/20, 5:00 AM** | 40 |
+| **Milestone 2** | **Your feature.** A list, a command and three functions of your own, one part a day, and a Personalized Project Reference for it. | Thu 11/12, Mon 11/16, Tue 11/17, Wed 11/18 | **Fri 11/20, 5:00 AM** | 40 |
 | **Milestone 3** | **Your level.** `MyLevel`, Function A and Function B of your own design, credits. Optional: your own spell, someone to talk to, a quest and a boss. | Mon 11/23, Tue 11/24 | **Wed 12/2, start of class** | 80 |
 | **Playtest** | You play someone else's level in your game and write the report. | Tue 12/1 | **Tue 12/1, end of class** | 20 |
 | **Demo day** | Two minutes: your level on the projector, and one function you are proud of. | Wed 12/2 | | part of Milestone 3 |
