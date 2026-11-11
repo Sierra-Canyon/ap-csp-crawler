@@ -4,7 +4,7 @@
 
 A top-down dungeon game that already works: monsters, a boss, arrows, spells, powerups, and people
 to talk to. From the first day you write small functions that the game calls: one quest each class.
-By Wednesday 12/2 you also add a character, rewrite eight of its functions, and design a level.
+By Wednesday 12/2 you also add a character, add a feature of your own, and design a level.
 
 The game is built from **five tools and nothing else**: variables, `if / else if / else`,
 functions, `List<T>`, and `for` loops. No classes, no arrays, no `foreach`, no `switch`,
@@ -39,7 +39,7 @@ git push -u origin crawler
 | `milestone-1` | `IsFairCharacter` and `MyCharacter` | Thu 10/15, when it is due |
 | `lists` | Days 8 to 10 | Wed 10/28, end of Day 10 |
 | `loops` | Days 11 to 16 | Tue 11/10, end of Day 16 |
-| `milestone-2` | the eight rewrites | Fri 11/20, 5:00 AM |
+| `milestone-2` | your feature | Fri 11/20, 5:00 AM |
 | `milestone-3` | your level, the playtest, the demo | Wed 12/2, demo day |
 
 `main` is never edited directly: it receives your pull requests and the template's updates. Your student-log repository uses the same branch names, at the same times: when this repository moves to a new branch, the log does too, with its own pull request. The pull request steps are on the sheet of each unit's last day and on the one-page sheet "Branches and pull requests".
