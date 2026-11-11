@@ -1,10 +1,10 @@
 DUNGEON CRAWLER: every function in the game
 ============================================================
-130 functions in 16 files.
+135 functions in 17 files.
 
 HOW TO RUN        open a terminal in this folder and type:   dotnet run
 HOW TO PLAY       w a s d + Enter to move. Walk into M to fight, into N to talk. Type help for the rest.
-YOUR FILES        MyLevel.cs, MyCharacter.cs, MySpell.cs and MyDialogue.cs
+YOUR FILES        MyLevel.cs, MyCharacter.cs, MySpell.cs, MyDialogue.cs and MyFeature.cs
 YOUR QUESTS       Quest00.cs to Quest16.cs, one each class. They are not listed below: the sheet
                   for the day describes them. QuestBoard.cs is teacher code that calls them.
 SKIP TO MY LEVEL  in Program.cs change   int levelNumber = 1;   to   = 4;
@@ -454,3 +454,20 @@ int MyDialogueStart(int questState)
 void MyDialogue(List<string> says, List<string> choiceA, List<int> nextA, List<string> choiceB, List<int> nextB, List<string> gives)
       YOURS. Adds your lines of conversation with AddLine.
 
+------------------------------------------------------------
+MyFeature.cs: YOUR FILE (Milestone 2)
+------------------------------------------------------------
+string MyFeatureWord()
+      YOURS. The word the player types for your feature.
+
+string MyFeatureTitle()
+      YOURS. The first line your command prints.
+
+void MyRecord(List<string> entries, string what)
+      YOURS. Adds what to the end of entries. An empty what adds nothing.
+
+int MyCount(List<string> entries, string word)
+      YOURS. How many entries are exactly word.
+
+string MyReport(List<string> entries, string filter)
+      YOURS. What your command shows. An empty filter shows every entry.
